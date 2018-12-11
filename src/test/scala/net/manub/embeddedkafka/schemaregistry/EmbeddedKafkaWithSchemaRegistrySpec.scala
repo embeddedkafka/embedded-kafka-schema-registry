@@ -1,12 +1,12 @@
 package net.manub.embeddedkafka.schemaregistry
 
-import java.time.Duration
-
+import net.manub.embeddedkafka.duration2JavaDuration
 import net.manub.embeddedkafka.Codecs._
 import net.manub.embeddedkafka.TestAvroClass
 import org.apache.kafka.clients.producer.ProducerRecord
 
 import scala.collection.JavaConverters._
+import scala.concurrent.duration._
 
 class EmbeddedKafkaWithSchemaRegistrySpec
     extends EmbeddedKafkaWithSchemaRegistrySpecSupport
@@ -15,7 +15,7 @@ class EmbeddedKafkaWithSchemaRegistrySpec
   implicit lazy val embeddedKafkaConfig: EmbeddedKafkaConfigWithSchemaRegistry =
     EmbeddedKafkaConfigWithSchemaRegistry()
 
-  val consumerPollTimeout = 5000
+  val consumerPollTimeout: FiniteDuration = 5.seconds
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -36,7 +36,7 @@ class EmbeddedKafkaWithSchemaRegistrySpec
       val consumer = kafkaConsumer[String, TestAvroClass]
       consumer.subscribe(List(topic).asJava)
 
-      val records = consumer.poll(Duration.ofMillis(consumerPollTimeout))
+      val records = consumer.poll(duration2JavaDuration(consumerPollTimeout))
 
       records.iterator().hasNext shouldBe true
       val record = records.iterator().next()
@@ -56,7 +56,7 @@ class EmbeddedKafkaWithSchemaRegistrySpec
       val consumer = kafkaConsumer[String, TestAvroClass]
       consumer.subscribe(List(topic).asJava)
 
-      val records = consumer.poll(Duration.ofMillis(consumerPollTimeout))
+      val records = consumer.poll(duration2JavaDuration(consumerPollTimeout))
 
       records.iterator().hasNext shouldBe true
       val record = records.iterator().next()
@@ -82,7 +82,7 @@ class EmbeddedKafkaWithSchemaRegistrySpec
       consumer.subscribe(List(topic).asJava)
 
       val records =
-        consumer.poll(Duration.ofMillis(consumerPollTimeout)).iterator()
+        consumer.poll(duration2JavaDuration(consumerPollTimeout)).iterator()
 
       records.hasNext shouldBe true
 
