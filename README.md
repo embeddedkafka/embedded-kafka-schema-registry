@@ -9,7 +9,7 @@ Relies on the [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka) 
 
 ### Version compatibility matrix
 
-embedded-kafka-schema-registry is available on Bintray and Maven Central, compiled for both Scala 2.11 and 2.12.
+embedded-kafka-schema-registry is available on Maven Central, compiled for both Scala 2.11 and 2.12.
 
 Currently there's no support for Scala 2.13-Mx as Confluent artifacts are not published for these versions.
 

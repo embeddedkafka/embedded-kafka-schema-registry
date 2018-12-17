@@ -6,23 +6,17 @@ val akkaVersion = "2.5.18"
 
 lazy val publishSettings = Seq(
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
-  publishMavenStyle := true,
   publishArtifact in Test := false,
-  pomIncludeRepository := { _ =>
-    false
-  },
-  pomExtra :=
-    <scm>
-      <url>https://github.com/embeddedkafka/embedded-kafka-schema-registry</url>
-      <connection>scm:git:git@github.com:embeddedkafka/embedded-kafka-schema-registry.git</connection>
-    </scm>
-      <developers>
-        <developer>
-          <id>manub</id>
-          <name>Emanuele Blanco</name>
-          <url>http://twitter.com/manub</url>
-        </developer>
-      </developers>
+  // https://github.com/sbt/sbt/issues/3570#issuecomment-432814188
+  updateOptions := updateOptions.value.withGigahorse(false),
+  developers := List(
+    Developer(
+      "manub",
+      "Emanuele Blanco",
+      "emanuele.blanco@gmail.com",
+      url("http://twitter.com/manub")
+    )
+  )
 )
 
 lazy val releaseSettings = Seq(
