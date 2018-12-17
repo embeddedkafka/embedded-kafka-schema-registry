@@ -55,5 +55,6 @@ lazy val root = (project in file("."))
   .settings(commonLibrarySettings)
   .settings(releaseSettings: _*)
   .settings(resolvers ++= Seq(
-    "confluent" at "https://packages.confluent.io/maven/"
+    "confluent" at "https://packages.confluent.io/maven/",
+    Resolver.sonatypeRepo("snapshots")
   ))
