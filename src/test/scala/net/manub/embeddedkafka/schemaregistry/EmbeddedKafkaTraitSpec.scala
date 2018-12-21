@@ -1,13 +1,13 @@
 package net.manub.embeddedkafka.schemaregistry
 
-class EmbeddedKafkaWithSchemaRegistryTraitSpec
-    extends EmbeddedKafkaWithSchemaRegistrySpecSupport
-    with EmbeddedKafkaWithSchemaRegistry {
+class EmbeddedKafkaTraitSpec
+    extends EmbeddedKafkaSpecSupport
+    with EmbeddedKafka {
 
   "the withRunningKafka method" should {
     "start a Schema Registry server on a specified port" in {
-      implicit val config: EmbeddedKafkaConfigWithSchemaRegistry =
-        EmbeddedKafkaConfigWithSchemaRegistry(schemaRegistryPort = 12345)
+      implicit val config: EmbeddedKafkaConfig =
+        EmbeddedKafkaConfig(schemaRegistryPort = 12345)
 
       withRunningKafka {
         schemaRegistryIsAvailable(12345)
@@ -18,9 +18,9 @@ class EmbeddedKafkaWithSchemaRegistryTraitSpec
 
     "start and stop Kafka, Zookeeper, and Schema Registry successfully on non-zero ports" in {
       val userDefinedConfig =
-        EmbeddedKafkaConfigWithSchemaRegistry(kafkaPort = 12345,
-                                              zooKeeperPort = 12346,
-                                              schemaRegistryPort = 12347)
+        EmbeddedKafkaConfig(kafkaPort = 12345,
+                            zooKeeperPort = 12346,
+                            schemaRegistryPort = 12347)
       val actualConfig = withRunningKafkaOnFoundPort(userDefinedConfig) {
         actualConfig =>
           actualConfig shouldBe userDefinedConfig
@@ -31,15 +31,13 @@ class EmbeddedKafkaWithSchemaRegistryTraitSpec
     }
   }
 
-  private def everyServerIsAvailable(
-      config: EmbeddedKafkaConfigWithSchemaRegistry): Unit = {
+  private def everyServerIsAvailable(config: EmbeddedKafkaConfig): Unit = {
     kafkaIsAvailable(config.kafkaPort)
     schemaRegistryIsAvailable(config.schemaRegistryPort)
     zookeeperIsAvailable(config.zooKeeperPort)
   }
 
-  private def noServerIsAvailable(
-      config: EmbeddedKafkaConfigWithSchemaRegistry): Unit = {
+  private def noServerIsAvailable(config: EmbeddedKafkaConfig): Unit = {
     kafkaIsNotAvailable(config.kafkaPort)
     schemaRegistryIsNotAvailable(config.schemaRegistryPort)
     zookeeperIsNotAvailable(config.zooKeeperPort)

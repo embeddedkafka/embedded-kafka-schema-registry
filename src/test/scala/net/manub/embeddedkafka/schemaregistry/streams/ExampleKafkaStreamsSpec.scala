@@ -10,15 +10,15 @@ import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.kstream.{Consumed, KStream, Produced}
 import org.scalatest.{Matchers, WordSpec}
 
-class ExampleKafkaStreamsSchemaRegistrySpec
+class ExampleKafkaStreamsSpec
     extends WordSpec
     with Matchers
-    with EmbeddedKafkaStreamsWithSchemaRegistryAllInOne {
+    with EmbeddedKafkaStreamsAllInOne {
 
-  implicit val config: EmbeddedKafkaConfigWithSchemaRegistry =
-    EmbeddedKafkaConfigWithSchemaRegistry(kafkaPort = 7000,
-                                          zooKeeperPort = 7001,
-                                          schemaRegistryPort = 7002)
+  implicit val config: EmbeddedKafkaConfig =
+    EmbeddedKafkaConfig(kafkaPort = 7000,
+                        zooKeeperPort = 7001,
+                        schemaRegistryPort = 7002)
 
   val (inTopic, outTopic) = ("in", "out")
 

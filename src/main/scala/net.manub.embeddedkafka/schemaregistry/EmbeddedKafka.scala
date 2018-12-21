@@ -5,36 +5,27 @@ import net.manub.embeddedkafka.schemaregistry.ops.{
   RunningSchemaRegistryOps,
   SchemaRegistryOps
 }
-import net.manub.embeddedkafka.{
-  EmbeddedKafka,
-  EmbeddedKafkaSupport,
-  EmbeddedServer,
-  EmbeddedZ
-}
+import net.manub.embeddedkafka.{EmbeddedKafkaSupport, EmbeddedServer, EmbeddedZ}
 
 import scala.reflect.io.Directory
 
-trait EmbeddedKafkaWithSchemaRegistry
-    extends EmbeddedKafkaSupport[EmbeddedKafkaConfigWithSchemaRegistry]
-    with EmbeddedKafkaOps[EmbeddedKafkaConfigWithSchemaRegistry,
-                          EmbeddedKWithSR]
+trait EmbeddedKafka
+    extends EmbeddedKafkaSupport[EmbeddedKafkaConfig]
+    with EmbeddedKafkaOps[EmbeddedKafkaConfig, EmbeddedKWithSR]
     with SchemaRegistryOps {
 
   override private[embeddedkafka] def baseConsumerConfig(
-      implicit config: EmbeddedKafkaConfigWithSchemaRegistry)
-    : Map[String, Object] =
+      implicit config: EmbeddedKafkaConfig): Map[String, Object] =
     defaultConsumerConfig ++ consumerConfigForSchemaRegistry ++ config.customConsumerProperties
 
   override private[embeddedkafka] def baseProducerConfig(
-      implicit config: EmbeddedKafkaConfigWithSchemaRegistry)
-    : Map[String, Object] =
+      implicit config: EmbeddedKafkaConfig): Map[String, Object] =
     defaultProducerConf ++ configForSchemaRegistry ++ config.customProducerProperties
 
   override private[embeddedkafka] def withRunningServers[T](
-      config: EmbeddedKafkaConfigWithSchemaRegistry,
+      config: EmbeddedKafkaConfig,
       actualZkPort: Int,
-      kafkaLogsDir: Directory)(
-      body: EmbeddedKafkaConfigWithSchemaRegistry => T): T = {
+      kafkaLogsDir: Directory)(body: EmbeddedKafkaConfig => T): T = {
     val broker =
       startKafka(config.kafkaPort,
                  actualZkPort,
@@ -46,7 +37,7 @@ trait EmbeddedKafkaWithSchemaRegistry
     )
     val actualSchemaRegistryPort = restApp.restServer.getURI.getPort
 
-    val configWithUsedPorts = EmbeddedKafkaConfigWithSchemaRegistry(
+    val configWithUsedPorts = EmbeddedKafkaConfig(
       EmbeddedKafka.kafkaPort(broker),
       actualZkPort,
       actualSchemaRegistryPort,
@@ -66,21 +57,20 @@ trait EmbeddedKafkaWithSchemaRegistry
 
 }
 
-object EmbeddedKafkaWithSchemaRegistry
-    extends EmbeddedKafkaWithSchemaRegistry
-    with RunningEmbeddedKafkaOps[EmbeddedKafkaConfigWithSchemaRegistry,
-                                 EmbeddedKWithSR]
+object EmbeddedKafka
+    extends EmbeddedKafka
+    with RunningEmbeddedKafkaOps[EmbeddedKafkaConfig, EmbeddedKWithSR]
     with RunningSchemaRegistryOps {
 
-  override def start()(implicit config: EmbeddedKafkaConfigWithSchemaRegistry)
-    : EmbeddedKWithSR = {
+  override def start()(
+      implicit config: EmbeddedKafkaConfig): EmbeddedKWithSR = {
     val zkLogsDir = Directory.makeTemp("zookeeper-logs")
     val kafkaLogsDir = Directory.makeTemp("kafka-logs")
 
     val factory =
       EmbeddedZ(startZooKeeper(config.zooKeeperPort, zkLogsDir), zkLogsDir)
 
-    val configWithUsedZooKeeperPort = EmbeddedKafkaConfigWithSchemaRegistryImpl(
+    val configWithUsedZooKeeperPort = EmbeddedKafkaConfigImpl(
       config.kafkaPort,
       zookeeperPort(factory),
       config.schemaRegistryPort,

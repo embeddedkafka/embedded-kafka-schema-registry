@@ -10,10 +10,7 @@ import io.confluent.kafka.serializers.{
 }
 import net.manub.embeddedkafka.EmbeddedServer
 import net.manub.embeddedkafka.ops.RunningServersOps
-import net.manub.embeddedkafka.schemaregistry.{
-  EmbeddedKafkaConfigWithSchemaRegistry,
-  EmbeddedSR
-}
+import net.manub.embeddedkafka.schemaregistry.{EmbeddedKafkaConfig, EmbeddedSR}
 
 /**
   * Trait for Schema Registry-related actions.
@@ -22,22 +19,20 @@ import net.manub.embeddedkafka.schemaregistry.{
 trait SchemaRegistryOps {
 
   /**
-    * @param config an implicit [[EmbeddedKafkaConfigWithSchemaRegistry]].
+    * @param config an implicit [[EmbeddedKafkaConfig]].
     * @return a map of configuration to grant Schema Registry support
     */
   protected[embeddedkafka] def configForSchemaRegistry(
-      implicit config: EmbeddedKafkaConfigWithSchemaRegistry)
-    : Map[String, Object] =
+      implicit config: EmbeddedKafkaConfig): Map[String, Object] =
     Map(
       AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${config.schemaRegistryPort}")
 
   /**
-    * @param config an implicit [[EmbeddedKafkaConfigWithSchemaRegistry]].
+    * @param config an implicit [[EmbeddedKafkaConfig]].
     * @return a map of Kafka Consumer configuration to grant Schema Registry support
     */
   protected[embeddedkafka] def consumerConfigForSchemaRegistry(
-      implicit config: EmbeddedKafkaConfigWithSchemaRegistry)
-    : Map[String, Object] =
+      implicit config: EmbeddedKafkaConfig): Map[String, Object] =
     configForSchemaRegistry ++ Map(
       KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG -> true.toString
     )
@@ -75,8 +70,7 @@ trait SchemaRegistryOps {
 trait RunningSchemaRegistryOps {
   this: SchemaRegistryOps with RunningServersOps =>
 
-  def startSchemaRegistry(
-      implicit config: EmbeddedKafkaConfigWithSchemaRegistry): EmbeddedSR = {
+  def startSchemaRegistry(implicit config: EmbeddedKafkaConfig): EmbeddedSR = {
     val restApp = EmbeddedSR(
       startSchemaRegistry(config.schemaRegistryPort, config.zooKeeperPort))
     runningServers.add(restApp)

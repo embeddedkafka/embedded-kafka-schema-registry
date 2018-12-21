@@ -8,22 +8,20 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
-class EmbeddedKafkaWithSchemaRegistrySpec
-    extends EmbeddedKafkaWithSchemaRegistrySpecSupport
-    with EmbeddedKafkaWithSchemaRegistry {
+class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
 
-  implicit lazy val embeddedKafkaConfig: EmbeddedKafkaConfigWithSchemaRegistry =
-    EmbeddedKafkaConfigWithSchemaRegistry()
+  implicit lazy val embeddedKafkaConfig: EmbeddedKafkaConfig =
+    EmbeddedKafkaConfig()
 
   val consumerPollTimeout: FiniteDuration = 5.seconds
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    EmbeddedKafkaWithSchemaRegistry.start()
+    EmbeddedKafka.start()
   }
 
   override def afterAll(): Unit = {
-    EmbeddedKafkaWithSchemaRegistry.stop()
+    EmbeddedKafka.stop()
     super.afterAll()
   }
 

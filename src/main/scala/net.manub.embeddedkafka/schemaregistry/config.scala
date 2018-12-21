@@ -1,24 +1,26 @@
 package net.manub.embeddedkafka.schemaregistry
 
-import net.manub.embeddedkafka.EmbeddedKafkaConfig
+import net.manub.embeddedkafka.{
+  EmbeddedKafkaConfig => OriginalEmbeddedKafkaConfig
+}
 
-trait EmbeddedKafkaConfigWithSchemaRegistry extends EmbeddedKafkaConfig {
+trait EmbeddedKafkaConfig extends OriginalEmbeddedKafkaConfig {
   def schemaRegistryPort: Int
 }
 
-case class EmbeddedKafkaConfigWithSchemaRegistryImpl(
+case class EmbeddedKafkaConfigImpl(
     kafkaPort: Int,
     zooKeeperPort: Int,
     schemaRegistryPort: Int,
     customBrokerProperties: Map[String, String],
     customProducerProperties: Map[String, String],
     customConsumerProperties: Map[String, String]
-) extends EmbeddedKafkaConfigWithSchemaRegistry {
+) extends EmbeddedKafkaConfig {
   override val numberOfThreads: Int = 3
 }
 
-object EmbeddedKafkaConfigWithSchemaRegistry {
-  implicit val defaultConfig: EmbeddedKafkaConfig = apply()
+object EmbeddedKafkaConfig {
+  implicit val defaultConfig: OriginalEmbeddedKafkaConfig = apply()
 
   def apply(
       kafkaPort: Int = 6001,
@@ -27,11 +29,11 @@ object EmbeddedKafkaConfigWithSchemaRegistry {
       customBrokerProperties: Map[String, String] = Map.empty,
       customProducerProperties: Map[String, String] = Map.empty,
       customConsumerProperties: Map[String, String] = Map.empty
-  ): EmbeddedKafkaConfigWithSchemaRegistry =
-    EmbeddedKafkaConfigWithSchemaRegistryImpl(kafkaPort,
-                                              zooKeeperPort,
-                                              schemaRegistryPort,
-                                              customBrokerProperties,
-                                              customProducerProperties,
-                                              customConsumerProperties)
+  ): EmbeddedKafkaConfig =
+    EmbeddedKafkaConfigImpl(kafkaPort,
+                            zooKeeperPort,
+                            schemaRegistryPort,
+                            customBrokerProperties,
+                            customProducerProperties,
+                            customConsumerProperties)
 }
