@@ -8,6 +8,9 @@ import net.manub.embeddedkafka.schemaregistry.EmbeddedKafka.{
   configForSchemaRegistry,
   consumerConfigForSchemaRegistry
 }
+import net.manub.embeddedkafka.schemaregistry.{
+  EmbeddedKafkaConfig => EmbeddedKafkaSRConfig
+}
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.common.serialization.{
   Deserializer,
@@ -21,7 +24,7 @@ import scala.collection.JavaConverters._
 package object schemaregistry {
 
   implicit def serdeFrom[T <: SpecificRecord](
-      implicit config: EmbeddedKafkaConfig): Serde[T] = {
+      implicit config: EmbeddedKafkaSRConfig): Serde[T] = {
     val ser = new ConfluentKafkaAvroSerializer
     ser.configure(configForSchemaRegistry.asJava, false)
     val deser = new ConfluentKafkaAvroDeserializer
@@ -31,11 +34,11 @@ package object schemaregistry {
   }
 
   implicit def specificAvroSerializer[T <: SpecificRecord](
-      implicit config: EmbeddedKafkaConfig): Serializer[T] =
+      implicit config: EmbeddedKafkaSRConfig): Serializer[T] =
     serdeFrom[T].serializer
 
   implicit def specificAvroDeserializer[T <: SpecificRecord](
-      implicit config: EmbeddedKafkaConfig): Deserializer[T] =
+      implicit config: EmbeddedKafkaSRConfig): Deserializer[T] =
     serdeFrom[T].deserializer
 
 }
