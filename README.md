@@ -19,17 +19,17 @@ Versions match the version of Confluent Schema Registry they're built against.
 
 * In your `build.sbt` file add the following resolver: `resolvers += "confluent" at "https://packages.confluent.io/maven/"`
 * In your `build.sbt` file add the following dependency: `"io.github.embeddedkafka" %% "embedded-kafka-schema-registry" % "5.1.0" % "test"`
-* Have your class extend the `EmbeddedKafkaWithSchemaRegistry` trait.
+* Have your class extend the `EmbeddedKafka` trait (from the `net.manub.embeddedkafka.schemaregistry` package).
 * Enclose the code that needs a running instance of Kafka within the `withRunningKafka` closure.
-* Provide an implicit `EmbeddedKafkaConfigWithSchemaRegistryImpl`.
+* Provide an implicit `EmbeddedKafkaConfigImpl` (from the same package mentioned before).
 
 ```scala
-class MySpec extends WordSpec with EmbeddedKafkaWithSchemaRegistry {
+class MySpec extends WordSpec with EmbeddedKafka {
 
   "runs with embedded kafka and Schema Registry" should {
 
     "work" in {
-      implicit val config = EmbeddedKafkaConfigWithSchemaRegistryImpl()
+      implicit val config = EmbeddedKafkaConfigImpl()
 
       withRunningKafka {
         // ... code goes here
@@ -47,7 +47,7 @@ The `net.manub.embeddedkafka.avro.schemaregistry` package object provides useful
 
 ### Using streams
 
-* For most of the cases have your class extend the `EmbeddedKafkaStreamsWithSchemaRegistryAllInOne` trait. This offers both streams management and easy creation of consumers for asserting resulting messages in output/sink topics.
-* If you only want to use the streams management without the test consumers just have the class extend the `EmbeddedKafkaStreamsWithSchemaRegistry` trait.
+* For most of the cases have your class extend the `EmbeddedKafkaStreamsAllInOne` trait (from the `net.manub.embeddedkafka.schemaregistry.streams` package). This offers both streams management and easy creation of consumers for asserting resulting messages in output/sink topics.
+* If you only want to use the streams management without the test consumers just have the class extend the `EmbeddedKafkaStreams` trait (from the same package mentioned before).
 * Build your own `Topology` and use `runStreams` to test it.
-* Have a look at the [example test](src/test/scala/net/manub/embeddedkafka/schemaregistry/streams/ExampleKafkaStreamsSchemaRegistrySpec.scala).
+* Have a look at the [example test](src/test/scala/net/manub/embeddedkafka/schemaregistry/streams/ExampleKafkaStreamsSpec.scala).
