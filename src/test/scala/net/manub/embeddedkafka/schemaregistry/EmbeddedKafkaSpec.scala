@@ -121,9 +121,9 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
       producer.send(
         new ProducerRecord[String, TestAvroClass](topic, key, message))
 
-      val res = consumeFirstKeyedMessageFrom[String, TestAvroClass](topic)
-      res._1 shouldBe key
-      res._2 shouldBe message
+      val (k, m) = consumeFirstKeyedMessageFrom[String, TestAvroClass](topic)
+      k shouldBe key
+      m shouldBe message
 
       producer.close()
     }
@@ -158,11 +158,8 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
             "topic2" -> List(("m2a", TestAvroClass("other name")),
                              ("m2b", TestAvroClass("even another name"))))
       val producer = aKafkaProducer[TestAvroClass]
-      for ((topic, messages) <- topicMessagesMap; message <- messages) {
-        producer.send(
-          new ProducerRecord[String, TestAvroClass](topic,
-                                                    message._1,
-                                                    message._2))
+      for ((topic, messages) <- topicMessagesMap; (k, v) <- messages) {
+        producer.send(new ProducerRecord[String, TestAvroClass](topic, k, v))
       }
 
       producer.flush()
