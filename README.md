@@ -1,11 +1,11 @@
 # embedded-kafka-schema-registry
 
+[![Build Status](https://travis-ci.org/embeddedkafka/embedded-kafka-schema-registry.svg?branch=master)](https://travis-ci.org/embeddedkafka/embedded-kafka-schema-registry)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7cb0fdc1aec14d26b1e9954c129b93fe?branch=master)](https://www.codacy.com/app/francescopellegrini/embedded-kafka-schema-registry)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
+
 A library that provides an in-memory [Confluent Schema Registry](https://docs.confluent.io/current/schema-registry/docs/index.html) instance to run your tests against.
 Relies on the [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka) library.
-
-[![Build Status](https://travis-ci.org/embeddedkafka/embedded-kafka-schema-registry.svg?branch=master)](https://travis-ci.org/embeddedkafka/embedded-kafka-schema-registry)
-
-[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
 ### Version compatibility matrix
 
