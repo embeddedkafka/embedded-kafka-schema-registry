@@ -43,7 +43,8 @@ class ExampleKafkaStreamsSpec
           consumedMessages.take(2) should be(
             Seq("hello" -> TestAvroClass("world"),
                 "foo" -> TestAvroClass("bar")))
-          consumedMessages.drop(2).head should be("baz" -> TestAvroClass("yaz"))
+          val h :: _ = consumedMessages.drop(2).toList
+          h should be("baz" -> TestAvroClass("yaz"))
         }
       }
     }
