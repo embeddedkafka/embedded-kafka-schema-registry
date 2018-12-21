@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/embeddedkafka/embedded-kafka-schema-registry.svg?branch=master)](https://travis-ci.org/embeddedkafka/embedded-kafka-schema-registry)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7cb0fdc1aec14d26b1e9954c129b93fe?branch=master)](https://www.codacy.com/app/francescopellegrini/embedded-kafka-schema-registry)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.12)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
 A library that provides an in-memory [Confluent Schema Registry](https://docs.confluent.io/current/schema-registry/docs/index.html) instance to run your tests against.
