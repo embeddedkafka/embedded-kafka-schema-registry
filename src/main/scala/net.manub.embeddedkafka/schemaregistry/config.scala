@@ -20,7 +20,7 @@ case class EmbeddedKafkaConfigImpl(
 }
 
 object EmbeddedKafkaConfig {
-  implicit val defaultConfig: OriginalEmbeddedKafkaConfig = apply()
+  implicit val defaultConfig: EmbeddedKafkaConfig = apply()
 
   def apply(
       kafkaPort: Int = 6001,
