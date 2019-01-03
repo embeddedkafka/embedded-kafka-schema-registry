@@ -3,15 +3,13 @@ package net.manub.embeddedkafka.schemaregistry
 import net.manub.embeddedkafka.duration2JavaDuration
 import net.manub.embeddedkafka.Codecs._
 import net.manub.embeddedkafka.TestAvroClass
+import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaConfig.defaultConfig
 import org.apache.kafka.clients.producer.ProducerRecord
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
-
-  implicit lazy val embeddedKafkaConfig: EmbeddedKafkaConfig =
-    EmbeddedKafkaConfig()
 
   val consumerPollTimeout: FiniteDuration = 5.seconds
 
