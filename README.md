@@ -5,7 +5,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.12)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
-A library that provides an in-memory [Confluent Schema Registry](https://docs.confluent.io/current/schema-registry/docs/index.html) instance to run your tests against.
+A library that provides in-memory instances of both Kafka and [Confluent Schema Registry](https://docs.confluent.io/current/schema-registry/docs/index.html) to run your tests against.
 
 Relies on the [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka) library.
 
@@ -41,7 +41,7 @@ class MySpec extends WordSpec with EmbeddedKafka {
 }
 ```
 
-* A Schema Registry server will be started and automatically shutdown at the end of the test.
+* In-memory Zookeeper, Kafka, and Schema Registry will be instantiated respectively on port 6000, 6001, and 6002 and automatically shutdown at the end of the test.
 
 ## Utility methods
 
