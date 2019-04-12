@@ -14,7 +14,16 @@ class EmbeddedKafkaTraitSpec
       }
     }
   }
+
   "the withRunningKafkaOnFoundPort method" should {
+
+    "start a Schema Registry server on an available port if 0" in {
+      val userDefinedConfig: EmbeddedKafkaConfig =
+        EmbeddedKafkaConfig(schemaRegistryPort = 0)
+      withRunningKafkaOnFoundPort(userDefinedConfig) { actualConfig =>
+        schemaRegistryIsAvailable(actualConfig.schemaRegistryPort)
+      }
+    }
 
     "start and stop Kafka, Zookeeper, and Schema Registry successfully on non-zero ports" in {
       val userDefinedConfig =

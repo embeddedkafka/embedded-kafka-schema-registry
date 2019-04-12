@@ -1,5 +1,6 @@
 package net.manub.embeddedkafka.schemaregistry.ops
 
+import java.net.ServerSocket
 import java.util.Properties
 
 import io.confluent.kafka.schemaregistry.RestApp
@@ -40,7 +41,7 @@ trait SchemaRegistryOps {
   /**
     * Starts a Schema Registry instance.
     *
-    * @param schemaRegistryPort     the port to run Schema Registry on
+    * @param schemaRegistryPort     the port to run Schema Registry on, if 0 an available port will be used
     * @param zooKeeperPort          the port ZooKeeper is running on
     * @param avroCompatibilityLevel the default [[AvroCompatibilityLevel]] of schemas
     * @param properties             additional [[Properties]]
@@ -50,13 +51,25 @@ trait SchemaRegistryOps {
                           avroCompatibilityLevel: AvroCompatibilityLevel =
                             AvroCompatibilityLevel.NONE,
                           properties: Properties = new Properties): RestApp = {
-    val server = new RestApp(schemaRegistryPort,
+
+    def findAvailablePort: Int = {
+      val server = new ServerSocket(0)
+      val port = server.getLocalPort
+      server.close()
+      port
+    }
+
+    val actualSchemaRegistryPort =
+      if (schemaRegistryPort == 0) findAvailablePort else schemaRegistryPort
+
+    val server = new RestApp(actualSchemaRegistryPort,
                              s"localhost:$zooKeeperPort",
                              "_schemas",
                              avroCompatibilityLevel.name,
                              properties)
     server.start()
     server
+
   }
 
 }
