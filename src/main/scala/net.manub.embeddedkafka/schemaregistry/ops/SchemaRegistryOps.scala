@@ -32,7 +32,7 @@ trait SchemaRegistryOps {
     * @param config an implicit [[EmbeddedKafkaConfig]].
     * @return a map of Kafka Consumer configuration to grant Schema Registry support
     */
-  protected[embeddedkafka] def consumerConfigForSchemaRegistry(
+  protected[embeddedkafka] def specificAvroReaderConfigForSchemaRegistry(
       implicit config: EmbeddedKafkaConfig): Map[String, Object] =
     configForSchemaRegistry ++ Map(
       KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG -> true.toString
@@ -85,7 +85,9 @@ trait RunningSchemaRegistryOps {
 
   def startSchemaRegistry(implicit config: EmbeddedKafkaConfig): EmbeddedSR = {
     val restApp = EmbeddedSR(
-      startSchemaRegistry(config.schemaRegistryPort, config.zooKeeperPort))
+      startSchemaRegistry(config.schemaRegistryPort,
+                          config.zooKeeperPort,
+                          config.avroCompatibilityLevel))
     runningServers.add(restApp)
     restApp
   }
