@@ -57,7 +57,7 @@ lazy val commonLibrarySettings = libraryDependencies ++= Seq(
   "io.confluent" % "kafka-schema-registry" % confluentVersion,
   "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests",
   "org.slf4j" % "slf4j-log4j12" % "1.7.26" % Test,
-  "org.scalatest" %% "scalatest" % "3.0.7" % Test,
+  "org.scalatest" %% "scalatest" % "3.0.8" % Test,
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test
 )
