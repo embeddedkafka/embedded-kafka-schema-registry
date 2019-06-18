@@ -1,7 +1,7 @@
 import sbtrelease.Version
 
 val embeddedKafkaVersion = "2.2.0"
-val confluentVersion = "5.2.1"
+val confluentVersion = "5.2.2"
 val akkaVersion = "2.5.23"
 
 lazy val publishSettings = Seq(
