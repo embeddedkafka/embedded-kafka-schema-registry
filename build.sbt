@@ -1,6 +1,6 @@
 import sbtrelease.Version
 
-val embeddedKafkaVersion = "2.2.1"
+val embeddedKafkaVersion = "2.3.0"
 val confluentVersion = "5.2.2"
 val akkaVersion = "2.5.23"
 
