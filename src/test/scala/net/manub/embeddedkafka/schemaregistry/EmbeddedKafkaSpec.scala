@@ -26,7 +26,7 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
   "the publishToKafka method" should {
     "publish synchronously a message to Kafka storing its schema into Schema Registry" in {
       val message = TestAvroClass("name")
-      val topic = "publish_test_topic"
+      val topic   = "publish_test_topic"
       publishToKafka(topic, message)
 
       val consumer = kafkaConsumer[String, TestAvroClass]
@@ -43,9 +43,9 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
     }
 
     "publish synchronously a message with String key to Kafka storing its schema into Schema Registry" in {
-      val key = "key"
+      val key     = "key"
       val message = TestAvroClass("name")
-      val topic = "publish_test_topic_string_key"
+      val topic   = "publish_test_topic_string_key"
 
       publishToKafka(topic, key, message)
 
@@ -64,11 +64,11 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
     }
 
     "publish synchronously a batch of messages with String keys to Kafka storing its schema into Schema Registry" in {
-      val key1 = "key1"
+      val key1     = "key1"
       val message1 = TestAvroClass("name")
-      val key2 = "key2"
+      val key2     = "key2"
       val message2 = TestAvroClass("other name")
-      val topic = "publish_test_topic_batch_string_key"
+      val topic    = "publish_test_topic_batch_string_key"
 
       val messages = List((key1, message1), (key2, message2))
 
@@ -98,7 +98,7 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
   "the consumeFirstMessageFrom method" should {
     "return a message published to a topic reading its schema from Schema Registry" in {
       val message = TestAvroClass("name")
-      val topic = "consume_test_topic"
+      val topic   = "consume_test_topic"
 
       val producer = aKafkaProducer[TestAvroClass]
       producer.send(new ProducerRecord[String, TestAvroClass](topic, message))
@@ -111,13 +111,14 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
 
   "the consumeFirstKeyedMessageFrom method" should {
     "return a message with String key published to a topic reading its schema from Schema Registry" in {
-      val key = "greeting"
+      val key     = "greeting"
       val message = TestAvroClass("name")
-      val topic = "consume_test_topic"
+      val topic   = "consume_test_topic"
 
       val producer = aKafkaProducer[TestAvroClass]
       producer.send(
-        new ProducerRecord[String, TestAvroClass](topic, key, message))
+        new ProducerRecord[String, TestAvroClass](topic, key, message)
+      )
 
       val (k, m) = consumeFirstKeyedMessageFrom[String, TestAvroClass](topic)
       k shouldBe key
@@ -129,8 +130,10 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
 
   "the consumeNumberMessagesFromTopics method" should {
     "consume from multiple topics reading messages schema from Schema Registry" in {
-      val topicMessagesMap = Map("topic1" -> List(TestAvroClass("name")),
-                                 "topic2" -> List(TestAvroClass("other name")))
+      val topicMessagesMap = Map(
+        "topic1" -> List(TestAvroClass("name")),
+        "topic2" -> List(TestAvroClass("other name"))
+      )
       val producer = aKafkaProducer[TestAvroClass]
       for ((topic, messages) <- topicMessagesMap; message <- messages) {
         producer.send(new ProducerRecord[String, TestAvroClass](topic, message))
@@ -141,7 +144,8 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
       val consumedMessages =
         consumeNumberMessagesFromTopics[TestAvroClass](
           topicMessagesMap.keySet,
-          topicMessagesMap.values.map(_.size).sum)
+          topicMessagesMap.values.map(_.size).sum
+        )
 
       consumedMessages shouldEqual topicMessagesMap
 
@@ -152,9 +156,13 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
   "the consumeNumberKeyedMessagesFromTopics method" should {
     "consume from multiple topics reading messages schema from Schema Registry" in {
       val topicMessagesMap =
-        Map("topic1" -> List(("m1", TestAvroClass("name"))),
-            "topic2" -> List(("m2a", TestAvroClass("other name")),
-                             ("m2b", TestAvroClass("even another name"))))
+        Map(
+          "topic1" -> List(("m1", TestAvroClass("name"))),
+          "topic2" -> List(
+            ("m2a", TestAvroClass("other name")),
+            ("m2b", TestAvroClass("even another name"))
+          )
+        )
       val producer = aKafkaProducer[TestAvroClass]
       for ((topic, messages) <- topicMessagesMap; (k, v) <- messages) {
         producer.send(new ProducerRecord[String, TestAvroClass](topic, k, v))
@@ -165,7 +173,8 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
       val consumedMessages =
         consumeNumberKeyedMessagesFromTopics[String, TestAvroClass](
           topicMessagesMap.keySet,
-          topicMessagesMap.values.map(_.size).sum)
+          topicMessagesMap.values.map(_.size).sum
+        )
 
       consumedMessages shouldEqual topicMessagesMap
 

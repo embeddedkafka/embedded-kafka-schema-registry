@@ -19,10 +19,12 @@ class ExampleKafkaStreamsSpec
     with EmbeddedKafkaStreamsAllInOne {
 
   implicit val config: EmbeddedKafkaConfig =
-    EmbeddedKafkaConfig(kafkaPort = 7000,
-                        zooKeeperPort = 7001,
-                        schemaRegistryPort = 7002,
-                        avroCompatibilityLevel = AvroCompatibilityLevel.FULL)
+    EmbeddedKafkaConfig(
+      kafkaPort = 7000,
+      zooKeeperPort = 7001,
+      schemaRegistryPort = 7002,
+      avroCompatibilityLevel = AvroCompatibilityLevel.FULL
+    )
 
   val (inTopic, outTopic) = ("in", "out")
 
@@ -46,8 +48,11 @@ class ExampleKafkaStreamsSpec
           val consumedMessages: Stream[(String, TestAvroClass)] =
             consumer.consumeLazily(outTopic)
           consumedMessages.take(2) should be(
-            Seq("hello" -> TestAvroClass("world"),
-                "foo" -> TestAvroClass("bar")))
+            Seq(
+              "hello" -> TestAvroClass("world"),
+              "foo"   -> TestAvroClass("bar")
+            )
+          )
           val h :: _ = consumedMessages.drop(2).toList
           h should be("baz" -> TestAvroClass("yaz"))
         }
@@ -67,7 +72,8 @@ class ExampleKafkaStreamsSpec
       val stream: KStream[String, GenericRecord] =
         streamBuilder.stream(
           inTopic,
-          Consumed.`with`(stringSerde, genericAvroValueSerde))
+          Consumed.`with`(stringSerde, genericAvroValueSerde)
+        )
 
       stream.to(outTopic, Produced.`with`(stringSerde, genericAvroValueSerde))
 
@@ -79,7 +85,8 @@ class ExampleKafkaStreamsSpec
           val consumedMessages: Stream[(String, GenericRecord)] =
             consumer.consumeLazily[(String, GenericRecord)](outTopic)
           consumedMessages.take(2) should be(
-            Seq("hello" -> recordWorld, "foo" -> recordBar))
+            Seq("hello" -> recordWorld, "foo" -> recordBar)
+          )
           val h :: _ = consumedMessages.drop(2).toList
           h should be("baz" -> recordYaz)
         }
@@ -100,7 +107,8 @@ class ExampleKafkaStreamsSpec
         consumer
           .consumeLazily[(String, TestAvroClass)](outTopic)
           .take(2) should be(
-          Seq("hello" -> TestAvroClass("world"), "foo" -> TestAvroClass("bar")))
+          Seq("hello" -> TestAvroClass("world"), "foo" -> TestAvroClass("bar"))
+        )
         consumer.close()
       }
     }

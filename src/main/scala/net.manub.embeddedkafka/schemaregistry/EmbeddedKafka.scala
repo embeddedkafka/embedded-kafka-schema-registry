@@ -15,22 +15,27 @@ trait EmbeddedKafka
     with SchemaRegistryOps {
 
   override private[embeddedkafka] def baseConsumerConfig(
-      implicit config: EmbeddedKafkaConfig): Map[String, Object] =
+      implicit config: EmbeddedKafkaConfig
+  ): Map[String, Object] =
     defaultConsumerConfig ++ configForSchemaRegistry ++ config.customConsumerProperties
 
   override private[embeddedkafka] def baseProducerConfig(
-      implicit config: EmbeddedKafkaConfig): Map[String, Object] =
+      implicit config: EmbeddedKafkaConfig
+  ): Map[String, Object] =
     defaultProducerConf ++ configForSchemaRegistry ++ config.customProducerProperties
 
   override private[embeddedkafka] def withRunningServers[T](
       config: EmbeddedKafkaConfig,
       actualZkPort: Int,
-      kafkaLogsDir: Directory)(body: EmbeddedKafkaConfig => T): T = {
+      kafkaLogsDir: Directory
+  )(body: EmbeddedKafkaConfig => T): T = {
     val broker =
-      startKafka(config.kafkaPort,
-                 actualZkPort,
-                 config.customBrokerProperties,
-                 kafkaLogsDir)
+      startKafka(
+        config.kafkaPort,
+        actualZkPort,
+        config.customBrokerProperties,
+        kafkaLogsDir
+      )
     val restApp = startSchemaRegistry(
       config.schemaRegistryPort,
       actualZkPort,
@@ -65,8 +70,9 @@ object EmbeddedKafka
     with RunningSchemaRegistryOps {
 
   override def start()(
-      implicit config: EmbeddedKafkaConfig): EmbeddedKWithSR = {
-    val zkLogsDir = Directory.makeTemp("zookeeper-logs")
+      implicit config: EmbeddedKafkaConfig
+  ): EmbeddedKWithSR = {
+    val zkLogsDir    = Directory.makeTemp("zookeeper-logs")
     val kafkaLogsDir = Directory.makeTemp("kafka-logs")
 
     val factory =
@@ -89,7 +95,8 @@ object EmbeddedKafka
         configWithUsedZooKeeperPort.schemaRegistryPort,
         configWithUsedZooKeeperPort.zooKeeperPort,
         configWithUsedZooKeeperPort.avroCompatibilityLevel
-      ))
+      )
+    )
 
     val server = EmbeddedKWithSR(
       factory = Option(factory),
@@ -108,11 +115,13 @@ object EmbeddedKafka
         s =>
           // Need to consider both independently-started Schema Registry and
           // all-in-one Kafka with SR
-          isEmbeddedKWithSR(s) || isEmbeddedSR(s))
+          isEmbeddedKWithSR(s) || isEmbeddedSR(s)
+      )
       .nonEmpty
 
   private[embeddedkafka] def isEmbeddedKWithSR(
-      server: EmbeddedServer): Boolean =
+      server: EmbeddedServer
+  ): Boolean =
     server.isInstanceOf[EmbeddedKWithSR]
 
 }

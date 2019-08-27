@@ -33,7 +33,8 @@ class EmbeddedKafkaTraitSpec
           kafkaPort = 12345,
           zooKeeperPort = 12346,
           schemaRegistryPort = 12347,
-          avroCompatibilityLevel = AvroCompatibilityLevel.NONE)
+          avroCompatibilityLevel = AvroCompatibilityLevel.NONE
+        )
 
       val actualConfig = withRunningKafkaOnFoundPort(userDefinedConfig) {
         actualConfig =>

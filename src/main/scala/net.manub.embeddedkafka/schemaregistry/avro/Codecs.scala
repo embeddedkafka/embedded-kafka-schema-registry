@@ -7,21 +7,23 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 object Codecs {
 
   implicit def stringKeyAvroValueCrDecoder[V <: SpecificRecord]
-    : ConsumerRecord[String, V] => (String, V) =
+      : ConsumerRecord[String, V] => (String, V) =
     cr => (cr.key, cr.value)
   implicit def avroValueCrDecoder[V <: SpecificRecord]
-    : ConsumerRecord[String, V] => V =
+      : ConsumerRecord[String, V] => V =
     _.value
   implicit def stringKeyAvroValueTopicCrDecoder[V <: SpecificRecord]
-    : ConsumerRecord[String, V] => (String, String, V) =
+      : ConsumerRecord[String, V] => (String, String, V) =
     cr => (cr.topic, cr.key, cr.value)
 
   implicit def stringKeyGenericValueCrDecoder
-    : ConsumerRecord[String, GenericRecord] => (String, GenericRecord) =
+      : ConsumerRecord[String, GenericRecord] => (String, GenericRecord) =
     cr => (cr.key, cr.value)
 
   implicit def genericKeyGenericValueCrDecoder
-    : ConsumerRecord[GenericRecord, GenericRecord] => (GenericRecord,
-                                                       GenericRecord) =
+      : ConsumerRecord[GenericRecord, GenericRecord] => (
+          GenericRecord,
+          GenericRecord
+      ) =
     cr => (cr.key, cr.value)
 }

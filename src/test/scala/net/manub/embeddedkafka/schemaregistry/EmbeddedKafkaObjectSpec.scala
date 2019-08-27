@@ -8,13 +8,19 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
     "invoking the start and stop methods" should {
       "start and stop a specific Kafka along with Schema Registry" in {
         val firstBroker = EmbeddedKafka.start()(
-          EmbeddedKafkaConfig(kafkaPort = 7000,
-                              zooKeeperPort = 7001,
-                              schemaRegistryPort = 7002))
+          EmbeddedKafkaConfig(
+            kafkaPort = 7000,
+            zooKeeperPort = 7001,
+            schemaRegistryPort = 7002
+          )
+        )
         EmbeddedKafka.start()(
-          EmbeddedKafkaConfig(kafkaPort = 8000,
-                              zooKeeperPort = 8001,
-                              schemaRegistryPort = 8002))
+          EmbeddedKafkaConfig(
+            kafkaPort = 8000,
+            zooKeeperPort = 8001,
+            schemaRegistryPort = 8002
+          )
+        )
 
         schemaRegistryIsAvailable(7002)
         kafkaIsAvailable(7000)
@@ -39,9 +45,11 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
 
       "start and stop Kafka, Zookeeper, and Schema Registry on different specified ports using an implicit configuration" in {
         implicit val config: EmbeddedKafkaConfig =
-          EmbeddedKafkaConfig(kafkaPort = 12345,
-                              zooKeeperPort = 54321,
-                              schemaRegistryPort = 13542)
+          EmbeddedKafkaConfig(
+            kafkaPort = 12345,
+            zooKeeperPort = 54321,
+            schemaRegistryPort = 13542
+          )
 
         EmbeddedKafka.start()
 

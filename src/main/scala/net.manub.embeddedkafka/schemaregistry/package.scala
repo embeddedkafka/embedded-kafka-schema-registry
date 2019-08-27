@@ -25,44 +25,55 @@ import scala.collection.JavaConverters._
 package object schemaregistry {
   // SpecificRecord
   implicit def specificAvroValueSerde[T <: SpecificRecord](
-      implicit config: EmbeddedKafkaSRConfig): Serde[T] = {
+      implicit config: EmbeddedKafkaSRConfig
+  ): Serde[T] = {
     serdeFrom[T](
       configForSchemaRegistry,
       specificAvroReaderConfigForSchemaRegistry, //need this to support SpecificRecord
-      isKey = false)
+      isKey = false
+    )
   }
 
   implicit def specificAvroValueSerializer[T <: SpecificRecord](
-      implicit config: EmbeddedKafkaSRConfig): Serializer[T] = {
+      implicit config: EmbeddedKafkaSRConfig
+  ): Serializer[T] = {
     specificAvroValueSerde[T].serializer
   }
 
   implicit def specificAvroValueDeserializer[T <: SpecificRecord](
-      implicit config: EmbeddedKafkaSRConfig): Deserializer[T] = {
+      implicit config: EmbeddedKafkaSRConfig
+  ): Deserializer[T] = {
     specificAvroValueSerde[T].deserializer
   }
 
   // GenericRecord
   implicit def genericAvroValueSerde(
-      implicit config: EmbeddedKafkaSRConfig): Serde[GenericRecord] = {
-    serdeFrom[GenericRecord](configForSchemaRegistry,
-                             configForSchemaRegistry,
-                             isKey = false)
+      implicit config: EmbeddedKafkaSRConfig
+  ): Serde[GenericRecord] = {
+    serdeFrom[GenericRecord](
+      configForSchemaRegistry,
+      configForSchemaRegistry,
+      isKey = false
+    )
   }
 
   implicit def genericAvroValueSerializer(
-      implicit config: EmbeddedKafkaSRConfig): Serializer[GenericRecord] = {
+      implicit config: EmbeddedKafkaSRConfig
+  ): Serializer[GenericRecord] = {
     genericAvroValueSerde.serializer
   }
 
   implicit def genericAvroValueDeserializer(
-      implicit config: EmbeddedKafkaSRConfig): Deserializer[GenericRecord] = {
+      implicit config: EmbeddedKafkaSRConfig
+  ): Deserializer[GenericRecord] = {
     genericAvroValueSerde.deserializer
   }
 
-  private def serdeFrom[T](serConfig: Map[String, Object],
-                           deserConfig: Map[String, Object],
-                           isKey: Boolean) = {
+  private def serdeFrom[T](
+      serConfig: Map[String, Object],
+      deserConfig: Map[String, Object],
+      isKey: Boolean
+  ) = {
     val ser = new ConfluentKafkaAvroSerializer
     ser.configure(serConfig.asJava, isKey)
     val deser = new ConfluentKafkaAvroDeserializer

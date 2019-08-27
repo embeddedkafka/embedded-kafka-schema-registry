@@ -27,7 +27,8 @@ case class EmbeddedKWithSR(
     factory: Option[EmbeddedZ],
     broker: KafkaServer,
     app: EmbeddedSR,
-    logsDirs: Directory)(implicit config: EmbeddedKafkaConfig)
+    logsDirs: Directory
+)(implicit config: EmbeddedKafkaConfig)
     extends EmbeddedServerWithKafka {
 
   override def stop(clearLogs: Boolean): Unit = {

@@ -15,15 +15,21 @@ abstract class EmbeddedKafkaSpecSupport
 
   def schemaRegistryIsAvailable(schemaRegistryPort: Int = 6002): Unit = {
     system.actorOf(
-      TcpClient.props(new InetSocketAddress("localhost", schemaRegistryPort),
-                      testActor))
+      TcpClient.props(
+        new InetSocketAddress("localhost", schemaRegistryPort),
+        testActor
+      )
+    )
     expectMsg(1.second, Connection.Success)
   }
 
   def schemaRegistryIsNotAvailable(schemaRegistryPort: Int = 6002): Unit = {
     system.actorOf(
-      TcpClient.props(new InetSocketAddress("localhost", schemaRegistryPort),
-                      testActor))
+      TcpClient.props(
+        new InetSocketAddress("localhost", schemaRegistryPort),
+        testActor
+      )
+    )
     expectMsg(1.second, Connection.Failure)
   }
 
