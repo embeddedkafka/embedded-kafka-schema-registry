@@ -24,16 +24,19 @@ trait SchemaRegistryOps {
     * @return a map of configuration to grant Schema Registry support
     */
   protected[embeddedkafka] def configForSchemaRegistry(
-      implicit config: EmbeddedKafkaConfig): Map[String, Object] =
+      implicit config: EmbeddedKafkaConfig
+  ): Map[String, Object] =
     Map(
-      AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${config.schemaRegistryPort}")
+      AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${config.schemaRegistryPort}"
+    )
 
   /**
     * @param config an implicit [[EmbeddedKafkaConfig]].
     * @return a map of Kafka Consumer configuration to grant Schema Registry support
     */
   protected[embeddedkafka] def specificAvroReaderConfigForSchemaRegistry(
-      implicit config: EmbeddedKafkaConfig): Map[String, Object] =
+      implicit config: EmbeddedKafkaConfig
+  ): Map[String, Object] =
     configForSchemaRegistry ++ Map(
       KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG -> true.toString
     )
@@ -46,15 +49,17 @@ trait SchemaRegistryOps {
     * @param avroCompatibilityLevel the default [[AvroCompatibilityLevel]] of schemas
     * @param properties             additional [[Properties]]
     */
-  def startSchemaRegistry(schemaRegistryPort: Int,
-                          zooKeeperPort: Int,
-                          avroCompatibilityLevel: AvroCompatibilityLevel =
-                            AvroCompatibilityLevel.NONE,
-                          properties: Properties = new Properties): RestApp = {
+  def startSchemaRegistry(
+      schemaRegistryPort: Int,
+      zooKeeperPort: Int,
+      avroCompatibilityLevel: AvroCompatibilityLevel =
+        AvroCompatibilityLevel.NONE,
+      properties: Properties = new Properties
+  ): RestApp = {
 
     def findAvailablePort: Int = {
       val server = new ServerSocket(0)
-      val port = server.getLocalPort
+      val port   = server.getLocalPort
       server.close()
       port
     }
@@ -62,11 +67,13 @@ trait SchemaRegistryOps {
     val actualSchemaRegistryPort =
       if (schemaRegistryPort == 0) findAvailablePort else schemaRegistryPort
 
-    val server = new RestApp(actualSchemaRegistryPort,
-                             s"localhost:$zooKeeperPort",
-                             "_schemas",
-                             avroCompatibilityLevel.name,
-                             properties)
+    val server = new RestApp(
+      actualSchemaRegistryPort,
+      s"localhost:$zooKeeperPort",
+      "_schemas",
+      avroCompatibilityLevel.name,
+      properties
+    )
     server.start()
     server
 
@@ -85,9 +92,12 @@ trait RunningSchemaRegistryOps {
 
   def startSchemaRegistry(implicit config: EmbeddedKafkaConfig): EmbeddedSR = {
     val restApp = EmbeddedSR(
-      startSchemaRegistry(config.schemaRegistryPort,
-                          config.zooKeeperPort,
-                          config.avroCompatibilityLevel))
+      startSchemaRegistry(
+        config.schemaRegistryPort,
+        config.zooKeeperPort,
+        config.avroCompatibilityLevel
+      )
+    )
     runningServers.add(restApp)
     restApp
   }

@@ -10,7 +10,8 @@ final class EmbeddedStreamsConfigImpl
     extends EmbeddedStreamsConfig[EmbeddedKafkaConfig] {
 
   override def config(streamName: String, extraConfig: Map[String, AnyRef])(
-      implicit kafkaConfig: EmbeddedKafkaConfig): Map[String, AnyRef] =
+      implicit kafkaConfig: EmbeddedKafkaConfig
+  ): Map[String, AnyRef] =
     baseStreamConfig(streamName) ++ EmbeddedKafka.specificAvroReaderConfigForSchemaRegistry ++ extraConfig
 
 }
