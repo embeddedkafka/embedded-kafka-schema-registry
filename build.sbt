@@ -39,6 +39,7 @@ lazy val releaseSettings = Seq(
 )
 
 lazy val commonSettings = Seq(
+  useCoursier := false,
   organization := "io.github.embeddedkafka",
   scalaVersion := "2.12.9",
   crossScalaVersions := Seq("2.12.9", "2.11.12"),
