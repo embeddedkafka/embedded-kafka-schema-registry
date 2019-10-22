@@ -31,7 +31,7 @@ class MySpec extends WordSpec with EmbeddedKafka {
   "runs with embedded kafka and Schema Registry" should {
 
     "work" in {
-      implicit val config = EmbeddedKafkaConfigImpl()
+      implicit val config = EmbeddedKafkaConfig()
 
       withRunningKafka {
         // ... code goes here
