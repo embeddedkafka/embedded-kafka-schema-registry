@@ -13,7 +13,6 @@ trait EmbeddedKafka
     extends EmbeddedKafkaSupport[EmbeddedKafkaConfig]
     with EmbeddedKafkaOps[EmbeddedKafkaConfig, EmbeddedKWithSR]
     with SchemaRegistryOps {
-
   override private[embeddedkafka] def baseConsumerConfig(
       implicit config: EmbeddedKafkaConfig
   ): Map[String, Object] =
@@ -61,14 +60,12 @@ trait EmbeddedKafka
       broker.awaitShutdown()
     }
   }
-
 }
 
 object EmbeddedKafka
     extends EmbeddedKafka
     with RunningEmbeddedKafkaOps[EmbeddedKafkaConfig, EmbeddedKWithSR]
     with RunningSchemaRegistryOps {
-
   override def start()(
       implicit config: EmbeddedKafkaConfig
   ): EmbeddedKWithSR = {
@@ -123,5 +120,4 @@ object EmbeddedKafka
       server: EmbeddedServer
   ): Boolean =
     server.isInstanceOf[EmbeddedKWithSR]
-
 }

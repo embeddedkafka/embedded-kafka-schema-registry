@@ -5,7 +5,6 @@ import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.ConsumerRecord
 
 object Codecs {
-
   implicit def stringKeyAvroValueCrDecoder[V <: SpecificRecord]
       : ConsumerRecord[String, V] => (String, V) =
     cr => (cr.key, cr.value)

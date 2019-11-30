@@ -16,15 +16,17 @@ import org.scalatest.concurrent.{
   ScalaFutures
 }
 import org.scalatest.time.{Milliseconds, Seconds, Span}
-import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
+import org.scalatest.BeforeAndAfterAll
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
 abstract class EmbeddedKafkaSpecSupport
     extends TestKit(ActorSystem("embedded-kafka-spec"))
-    with WordSpecLike
+    with AnyWordSpecLike
     with Matchers
     with ImplicitSender
     with BeforeAndAfterAll
@@ -32,7 +34,6 @@ abstract class EmbeddedKafkaSpecSupport
     with JavaFutures
     with Eventually
     with IntegrationPatience {
-
   implicit val config: PatienceConfig =
     PatienceConfig(Span(2, Seconds), Span(100, Milliseconds))
 
@@ -83,7 +84,6 @@ object Connection {
 }
 
 class TcpClient(remote: InetSocketAddress, listener: ActorRef) extends Actor {
-
   import context.system
 
   IO(Tcp) ! Connect(remote)

@@ -5,7 +5,6 @@ import io.confluent.kafka.schemaregistry.avro.AvroCompatibilityLevel
 class EmbeddedKafkaTraitSpec
     extends EmbeddedKafkaSpecSupport
     with EmbeddedKafka {
-
   "the withRunningKafka method" should {
     "start a Schema Registry server on a specified port" in {
       implicit val config: EmbeddedKafkaConfig =
@@ -18,7 +17,6 @@ class EmbeddedKafkaTraitSpec
   }
 
   "the withRunningKafkaOnFoundPort method" should {
-
     "start a Schema Registry server on an available port if 0" in {
       val userDefinedConfig: EmbeddedKafkaConfig =
         EmbeddedKafkaConfig(schemaRegistryPort = 0)
