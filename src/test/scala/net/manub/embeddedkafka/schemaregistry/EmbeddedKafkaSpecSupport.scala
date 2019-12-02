@@ -12,7 +12,6 @@ import scala.concurrent.duration._
 
 abstract class EmbeddedKafkaSpecSupport
     extends OriginalEmbeddedKafkaSpecSupport {
-
   def schemaRegistryIsAvailable(schemaRegistryPort: Int = 6002): Unit = {
     system.actorOf(
       TcpClient.props(
@@ -32,5 +31,4 @@ abstract class EmbeddedKafkaSpecSupport
     )
     expectMsg(1.second, Connection.Failure)
   }
-
 }

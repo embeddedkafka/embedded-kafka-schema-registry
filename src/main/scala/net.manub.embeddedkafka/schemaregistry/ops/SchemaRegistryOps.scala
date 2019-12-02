@@ -18,7 +18,6 @@ import net.manub.embeddedkafka.schemaregistry.{EmbeddedKafkaConfig, EmbeddedSR}
   * Relies on [[RestApp]].
   */
 trait SchemaRegistryOps {
-
   /**
     * @param config an implicit [[EmbeddedKafkaConfig]].
     * @return a map of configuration to grant Schema Registry support
@@ -56,7 +55,6 @@ trait SchemaRegistryOps {
         AvroCompatibilityLevel.NONE,
       properties: Properties = new Properties
   ): RestApp = {
-
     def findAvailablePort: Int = {
       val server = new ServerSocket(0)
       val port   = server.getLocalPort
@@ -76,9 +74,7 @@ trait SchemaRegistryOps {
     )
     server.start()
     server
-
   }
-
 }
 
 /**
@@ -110,5 +106,4 @@ trait RunningSchemaRegistryOps {
 
   private[embeddedkafka] def isEmbeddedSR(server: EmbeddedServer): Boolean =
     server.isInstanceOf[EmbeddedSR]
-
 }

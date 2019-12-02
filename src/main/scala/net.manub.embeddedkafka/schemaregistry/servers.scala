@@ -16,7 +16,6 @@ import scala.reflect.io.Directory
   * @param app the Schema Registry app.
   */
 case class EmbeddedSR(app: RestApp) extends EmbeddedServer {
-
   /**
     * Shuts down the app.
     */
@@ -30,7 +29,6 @@ case class EmbeddedKWithSR(
     logsDirs: Directory
 )(implicit config: EmbeddedKafkaConfig)
     extends EmbeddedServerWithKafka {
-
   override def stop(clearLogs: Boolean): Unit = {
     app.stop()
 

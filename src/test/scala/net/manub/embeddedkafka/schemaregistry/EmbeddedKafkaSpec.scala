@@ -10,7 +10,6 @@ import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
-
   val consumerPollTimeout: FiniteDuration = 5.seconds
 
   override def beforeAll(): Unit = {
@@ -181,5 +180,4 @@ class EmbeddedKafkaSpec extends EmbeddedKafkaSpecSupport with EmbeddedKafka {
       producer.close()
     }
   }
-
 }

@@ -3,7 +3,6 @@ package net.manub.embeddedkafka.schemaregistry
 import scala.reflect.io.Directory
 
 class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
-
   "the EmbeddedKafka object" when {
     "invoking the start and stop methods" should {
       "start and stop a specific Kafka along with Schema Registry" in {
