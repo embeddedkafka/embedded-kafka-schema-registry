@@ -2,7 +2,7 @@ import sbtrelease.Version
 
 val embeddedKafkaVersion = "2.3.1"
 val confluentVersion = "5.3.1"
-val akkaVersion = "2.5.26"
+val akkaVersion = "2.5.27"
 
 lazy val publishSettings = Seq(
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
