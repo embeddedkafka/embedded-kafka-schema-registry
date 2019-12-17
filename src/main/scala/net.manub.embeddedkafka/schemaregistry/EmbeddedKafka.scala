@@ -108,11 +108,10 @@ object EmbeddedKafka
 
   override def isRunning: Boolean =
     runningServers.list
-      .toFilteredSeq[EmbeddedKWithSR](
-        s =>
-          // Need to consider both independently-started Schema Registry and
-          // all-in-one Kafka with SR
-          isEmbeddedKWithSR(s) || isEmbeddedSR(s)
+      .toFilteredSeq[EmbeddedKWithSR](s =>
+        // Need to consider both independently-started Schema Registry and
+        // all-in-one Kafka with SR
+        isEmbeddedKWithSR(s) || isEmbeddedSR(s)
       )
       .nonEmpty
 

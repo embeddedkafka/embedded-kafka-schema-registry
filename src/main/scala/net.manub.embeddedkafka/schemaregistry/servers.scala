@@ -16,6 +16,7 @@ import scala.reflect.io.Directory
   * @param app the Schema Registry app.
   */
 case class EmbeddedSR(app: RestApp) extends EmbeddedServer {
+
   /**
     * Shuts down the app.
     */
