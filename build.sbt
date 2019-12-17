@@ -51,9 +51,10 @@ lazy val commonSettings = Seq(
 
 lazy val commonLibrarySettings = libraryDependencies ++= Seq(
   "io.github.embeddedkafka" %% "embedded-kafka-streams" % embeddedKafkaVersion,
-  "io.confluent" % "kafka-avro-serializer" % confluentVersion,
-  "io.confluent" % "kafka-schema-registry" % confluentVersion,
-  "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests",
+  // Exclude any transitive 2.12-specific dependency
+  "io.confluent" % "kafka-avro-serializer" % confluentVersion exclude("org.apache.kafka", "kafka_2.12"),
+  "io.confluent" % "kafka-schema-registry" % confluentVersion exclude("org.apache.kafka", "kafka_2.12"),
+  "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests" exclude("org.apache.kafka", "kafka_2.12"),
   "org.slf4j" % "slf4j-log4j12" % "1.7.30" % Test,
   "org.scalatest" %% "scalatest" % "3.1.0" % Test,
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Test,
