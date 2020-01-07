@@ -26,7 +26,7 @@ Versions match the version of Confluent Schema Registry they're built against.
 * Provide an implicit `EmbeddedKafkaConfigImpl` (from the same package mentioned before).
 
 ```scala
-class MySpec extends WordSpec with EmbeddedKafka {
+class MySpec extends AnyWordSpecLike with Matchers with EmbeddedKafka {
 
   "runs with embedded kafka and Schema Registry" should {
 

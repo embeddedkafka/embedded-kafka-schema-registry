@@ -7,8 +7,6 @@ val akkaVersion = "2.5.27"
 lazy val publishSettings = Seq(
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
   publishArtifact in Test := false,
-  // https://github.com/sbt/sbt/issues/3570#issuecomment-432814188
-  updateOptions := updateOptions.value.withGigahorse(false),
   developers := List(
     Developer(
       "manub",
@@ -39,7 +37,6 @@ lazy val releaseSettings = Seq(
 )
 
 lazy val commonSettings = Seq(
-  useCoursier := false,
   organization := "io.github.embeddedkafka",
   scalaVersion := "2.12.9",
   crossScalaVersions := Seq("2.12.9", "2.11.12"),
@@ -54,9 +51,10 @@ lazy val commonSettings = Seq(
 
 lazy val commonLibrarySettings = libraryDependencies ++= Seq(
   "io.github.embeddedkafka" %% "embedded-kafka-streams" % embeddedKafkaVersion,
-  "io.confluent" % "kafka-avro-serializer" % confluentVersion,
-  "io.confluent" % "kafka-schema-registry" % confluentVersion,
-  "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests",
+  // Exclude any transitive 2.12-specific dependency
+  "io.confluent" % "kafka-avro-serializer" % confluentVersion exclude("org.apache.kafka", "kafka_2.12"),
+  "io.confluent" % "kafka-schema-registry" % confluentVersion exclude("org.apache.kafka", "kafka_2.12"),
+  "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests" exclude("org.apache.kafka", "kafka_2.12"),
   "org.slf4j" % "slf4j-log4j12" % "1.7.30" % Test,
   "org.scalatest" %% "scalatest" % "3.1.0" % Test,
   "com.typesafe.akka" %% "akka-actor" % akkaVersion % Test,

@@ -18,6 +18,7 @@ import net.manub.embeddedkafka.schemaregistry.{EmbeddedKafkaConfig, EmbeddedSR}
   * Relies on [[RestApp]].
   */
 trait SchemaRegistryOps {
+
   /**
     * @param config an implicit [[EmbeddedKafkaConfig]].
     * @return a map of configuration to grant Schema Registry support
