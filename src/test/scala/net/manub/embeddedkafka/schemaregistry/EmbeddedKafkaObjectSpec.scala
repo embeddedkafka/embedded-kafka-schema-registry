@@ -5,7 +5,7 @@ import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaSpecSupport.{
   NotAvailable
 }
 
-import scala.reflect.io.Directory
+import java.nio.file.Files
 
 class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
   "the EmbeddedKafka object" when {
@@ -80,8 +80,8 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
-        EmbeddedKafka.startZooKeeper(Directory.makeTemp("zookeeper-test-logs"))
-        EmbeddedKafka.startKafka(Directory.makeTemp("kafka-test-logs"))
+        EmbeddedKafka.startZooKeeper(Files.createTempDirectory("zookeeper-test-logs"))
+        EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
         EmbeddedKafka.startSchemaRegistry
 
         EmbeddedKafka.isRunning shouldBe true
@@ -93,8 +93,8 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
-        EmbeddedKafka.startZooKeeper(Directory.makeTemp("zookeeper-test-logs"))
-        EmbeddedKafka.startKafka(Directory.makeTemp("kafka-test-logs"))
+        EmbeddedKafka.startZooKeeper(Files.createTempDirectory("zookeeper-test-logs"))
+        EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
         EmbeddedKafka.isRunning shouldBe false
         EmbeddedKafka.stop()
         EmbeddedKafka.isRunning shouldBe false
