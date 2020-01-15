@@ -2,7 +2,6 @@ import sbtrelease.Version
 
 val embeddedKafkaVersion = "2.4.0"
 val confluentVersion = "5.4.0"
-val akkaVersion = "2.5.27"
 
 lazy val publishSettings = Seq(
   licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
@@ -56,9 +55,7 @@ lazy val commonLibrarySettings = libraryDependencies ++= Seq(
   "io.confluent" % "kafka-schema-registry" % confluentVersion exclude("org.apache.kafka", "kafka_2.12"),
   "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests" exclude("org.apache.kafka", "kafka_2.12"),
   "org.slf4j" % "slf4j-log4j12" % "1.7.30" % Test,
-  "org.scalatest" %% "scalatest" % "3.1.0" % Test,
-  "com.typesafe.akka" %% "akka-actor" % akkaVersion % Test,
-  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test
+  "org.scalatest" %% "scalatest" % "3.1.0" % Test
 )
 
 lazy val root = (project in file("."))
