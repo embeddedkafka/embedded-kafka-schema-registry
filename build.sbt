@@ -38,8 +38,8 @@ lazy val releaseSettings = Seq(
 
 lazy val commonSettings = Seq(
   organization := "io.github.embeddedkafka",
-  scalaVersion := "2.12.9",
-  crossScalaVersions := Seq("2.12.9", "2.11.12"),
+  scalaVersion := "2.12.10",
+  crossScalaVersions := Seq("2.12.10", "2.11.12"),
   homepage := Some(url("https://github.com/embeddedkafka/embedded-kafka-schema-registry")),
   parallelExecution in Test := false,
   logBuffered in Test := false,
