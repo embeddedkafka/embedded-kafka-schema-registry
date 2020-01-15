@@ -1,5 +1,10 @@
 package net.manub.embeddedkafka.schemaregistry
 
+import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaSpecSupport.{
+  Available,
+  NotAvailable
+}
+
 import scala.reflect.io.Directory
 
 class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
@@ -21,23 +26,23 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
           )
         )
 
-        schemaRegistryIsAvailable(7002)
-        kafkaIsAvailable(7000)
-        zookeeperIsAvailable(7001)
+        expectedServerStatus(7002, Available)
+        expectedServerStatus(7000, Available)
+        expectedServerStatus(7001, Available)
 
-        schemaRegistryIsAvailable(8002)
-        kafkaIsAvailable(8000)
-        zookeeperIsAvailable(8001)
+        expectedServerStatus(8002, Available)
+        expectedServerStatus(8000, Available)
+        expectedServerStatus(8001, Available)
 
         EmbeddedKafka.stop(firstBroker)
 
-        schemaRegistryIsNotAvailable(7002)
-        kafkaIsNotAvailable(7000)
-        zookeeperIsNotAvailable(7001)
+        expectedServerStatus(7002, NotAvailable)
+        expectedServerStatus(7000, NotAvailable)
+        expectedServerStatus(7001, NotAvailable)
 
-        schemaRegistryIsAvailable(8002)
-        kafkaIsAvailable(8000)
-        zookeeperIsAvailable(8001)
+        expectedServerStatus(8002, Available)
+        expectedServerStatus(8000, Available)
+        expectedServerStatus(8001, Available)
 
         EmbeddedKafka.stop()
       }
@@ -52,9 +57,9 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
 
         EmbeddedKafka.start()
 
-        schemaRegistryIsAvailable(13542)
-        kafkaIsAvailable(12345)
-        zookeeperIsAvailable(54321)
+        expectedServerStatus(13542, Available)
+        expectedServerStatus(12345, Available)
+        expectedServerStatus(54321, Available)
 
         EmbeddedKafka.stop()
       }
