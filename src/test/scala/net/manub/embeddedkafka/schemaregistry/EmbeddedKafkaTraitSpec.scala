@@ -1,17 +1,20 @@
 package net.manub.embeddedkafka.schemaregistry
 
 import io.confluent.kafka.schemaregistry.avro.AvroCompatibilityLevel
+import net.manub.embeddedkafka.schemaregistry.EmbeddedKafka._
+import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaSpecSupport.{
+  Available,
+  NotAvailable
+}
 
-class EmbeddedKafkaTraitSpec
-    extends EmbeddedKafkaSpecSupport
-    with EmbeddedKafka {
+class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
   "the withRunningKafka method" should {
     "start a Schema Registry server on a specified port" in {
       implicit val config: EmbeddedKafkaConfig =
         EmbeddedKafkaConfig(schemaRegistryPort = 12345)
 
       withRunningKafka {
-        schemaRegistryIsAvailable(12345)
+        expectedServerStatus(12345, Available)
       }
     }
   }
@@ -21,7 +24,7 @@ class EmbeddedKafkaTraitSpec
       val userDefinedConfig: EmbeddedKafkaConfig =
         EmbeddedKafkaConfig(schemaRegistryPort = 0)
       withRunningKafkaOnFoundPort(userDefinedConfig) { actualConfig =>
-        schemaRegistryIsAvailable(actualConfig.schemaRegistryPort)
+        expectedServerStatus(actualConfig.schemaRegistryPort, Available)
       }
     }
 
@@ -45,14 +48,14 @@ class EmbeddedKafkaTraitSpec
   }
 
   private def everyServerIsAvailable(config: EmbeddedKafkaConfig): Unit = {
-    kafkaIsAvailable(config.kafkaPort)
-    schemaRegistryIsAvailable(config.schemaRegistryPort)
-    zookeeperIsAvailable(config.zooKeeperPort)
+    expectedServerStatus(config.kafkaPort, Available)
+    expectedServerStatus(config.schemaRegistryPort, Available)
+    expectedServerStatus(config.zooKeeperPort, Available)
   }
 
   private def noServerIsAvailable(config: EmbeddedKafkaConfig): Unit = {
-    kafkaIsNotAvailable(config.kafkaPort)
-    schemaRegistryIsNotAvailable(config.schemaRegistryPort)
-    zookeeperIsNotAvailable(config.zooKeeperPort)
+    expectedServerStatus(config.kafkaPort, NotAvailable)
+    expectedServerStatus(config.schemaRegistryPort, NotAvailable)
+    expectedServerStatus(config.zooKeeperPort, NotAvailable)
   }
 }
