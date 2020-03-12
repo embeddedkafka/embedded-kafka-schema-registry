@@ -80,7 +80,9 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
-        EmbeddedKafka.startZooKeeper(Files.createTempDirectory("zookeeper-test-logs"))
+        EmbeddedKafka.startZooKeeper(
+          Files.createTempDirectory("zookeeper-test-logs")
+        )
         EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
         EmbeddedKafka.startSchemaRegistry
 
@@ -93,7 +95,9 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
-        EmbeddedKafka.startZooKeeper(Files.createTempDirectory("zookeeper-test-logs"))
+        EmbeddedKafka.startZooKeeper(
+          Files.createTempDirectory("zookeeper-test-logs")
+        )
         EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
         EmbeddedKafka.isRunning shouldBe false
         EmbeddedKafka.stop()

@@ -14,7 +14,7 @@ Relies on the [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka) 
 
 embedded-kafka-schema-registry is available on Maven Central, compiled for both Scala 2.11 and 2.12.
 
-Currently there's no support for Scala 2.13-Mx as Confluent artifacts are not published for these versions.
+Currently there's no support for Scala 2.13 as Confluent artifacts are not published for such version.
 
 Versions match the version of Confluent Schema Registry they're built against.
 
@@ -46,11 +46,11 @@ class MySpec extends AnyWordSpecLike with Matchers with EmbeddedKafka {
 
 ## Utility methods
 
-The `net.manub.embeddedkafka.avro.schemaregistry` package object provides useful implicit converters for testing with Avro and Schema Registry.
+~~The `net.manub.embeddedkafka.avro.schemaregistry` package object provides useful implicit converters for testing with Avro and Schema Registry.~~
+
+The implicit Avro serdes have been deprecated. Please use `AvroSerdes` instead.
 
 ## Using streams
 
-* For most of the cases have your class extend the `EmbeddedKafkaStreamsAllInOne` trait (from the `net.manub.embeddedkafka.schemaregistry.streams` package). This offers both streams management and easy creation of consumers for asserting resulting messages in output/sink topics.
-* If you only want to use the streams management without the test consumers just have the class extend the `EmbeddedKafkaStreams` trait (from the same package mentioned before).
-* Build your own `Topology` and use `runStreams` to test it.
-* Have a look at the [example test](src/test/scala/net/manub/embeddedkafka/schemaregistry/streams/ExampleKafkaStreamsSpec.scala).
+* For most of the cases have your class extend the `EmbeddedKafkaStreams` trait (from the `net.manub.embeddedkafka.schemaregistry.streams` package). This offers both streams management and easy creation of consumers for asserting resulting messages in output/sink topics.
+* Use `EmbeddedKafkaStreams.runStreams` and `EmbeddedKafka.withConsumer` and `EmbeddedKafka.withProducer`. This allows you to create your own consumers of custom types as seen in the [example test](src/test/scala/net/manub/embeddedkafka/schemaregistry/streams/ExampleKafkaStreamsSpec.scala).

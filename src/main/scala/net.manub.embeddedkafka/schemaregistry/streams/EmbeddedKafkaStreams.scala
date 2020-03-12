@@ -12,3 +12,5 @@ trait EmbeddedKafkaStreams
   override protected[embeddedkafka] val streamsConfig =
     new EmbeddedStreamsConfigImpl
 }
+
+object EmbeddedKafkaStreams extends EmbeddedKafkaStreams

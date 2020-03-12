@@ -4,7 +4,11 @@ import java.nio.file.Path
 
 import io.confluent.kafka.schemaregistry.RestApp
 import kafka.server.KafkaServer
-import net.manub.embeddedkafka.{EmbeddedServer, EmbeddedServerWithKafka, EmbeddedZ}
+import net.manub.embeddedkafka.{
+  EmbeddedServer,
+  EmbeddedServerWithKafka,
+  EmbeddedZ
+}
 
 import scala.reflect.io.Directory
 

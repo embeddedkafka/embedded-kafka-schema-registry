@@ -5,7 +5,9 @@ import net.manub.embeddedkafka.Codecs._
 import net.manub.embeddedkafka.ConsumerExtensions._
 import net.manub.embeddedkafka.TestAvroClass
 import net.manub.embeddedkafka.schemaregistry.avro.Codecs._
-import net.manub.embeddedkafka.schemaregistry._
+import net.manub.embeddedkafka.schemaregistry.avro.AvroSerdes
+import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaConfig
+import net.manub.embeddedkafka.schemaregistry.streams.EmbeddedKafkaStreams._
 import org.apache.avro.Schema
 import org.apache.avro.generic.{GenericRecord, GenericRecordBuilder}
 import org.apache.kafka.common.serialization._
@@ -14,10 +16,7 @@ import org.apache.kafka.streams.kstream.{Consumed, KStream, Produced}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class ExampleKafkaStreamsSpec
-    extends AnyWordSpec
-    with Matchers
-    with EmbeddedKafkaStreamsAllInOne {
+class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
   implicit val config: EmbeddedKafkaConfig =
     EmbeddedKafkaConfig(
       kafkaPort = 7000,
@@ -28,9 +27,9 @@ class ExampleKafkaStreamsSpec
 
   val (inTopic, outTopic) = ("in", "out")
 
-  val stringSerde: Serde[String] = Serdes.String()
+  val stringSerde: Serde[String] = Serdes.String
   val avroSerde: Serde[TestAvroClass] =
-    specificAvroValueSerde[TestAvroClass]
+    AvroSerdes.specific[TestAvroClass]()
 
   "A Kafka streams test using Schema Registry" should {
     "support kafka streams and specific record" in {
@@ -41,6 +40,12 @@ class ExampleKafkaStreamsSpec
       stream.to(outTopic, Produced.`with`(stringSerde, avroSerde))
 
       runStreams(Seq(inTopic, outTopic), streamBuilder.build()) {
+        implicit val avroSerializer: Serializer[TestAvroClass] =
+          avroSerde.serializer
+
+        implicit val avroDeserializer: Deserializer[TestAvroClass] =
+          avroSerde.deserializer
+
         publishToKafka(inTopic, "hello", TestAvroClass("world"))
         publishToKafka(inTopic, "foo", TestAvroClass("bar"))
         publishToKafka(inTopic, "baz", TestAvroClass("yaz"))
@@ -68,16 +73,24 @@ class ExampleKafkaStreamsSpec
       val recordYaz: GenericRecord =
         new GenericRecordBuilder(schema).set("name", "yaz").build()
 
+      val genericAvroSerde = AvroSerdes.generic()
+
       val streamBuilder = new StreamsBuilder
       val stream: KStream[String, GenericRecord] =
         streamBuilder.stream(
           inTopic,
-          Consumed.`with`(stringSerde, genericAvroValueSerde)
+          Consumed.`with`(stringSerde, genericAvroSerde)
         )
 
-      stream.to(outTopic, Produced.`with`(stringSerde, genericAvroValueSerde))
+      stream.to(outTopic, Produced.`with`(stringSerde, genericAvroSerde))
 
       runStreams(Seq(inTopic, outTopic), streamBuilder.build()) {
+        implicit val genericAvroSerializer: Serializer[GenericRecord] =
+          genericAvroSerde.serializer
+
+        implicit val genericAvroDeserializer: Deserializer[GenericRecord] =
+          genericAvroSerde.deserializer
+
         publishToKafka(inTopic, "hello", recordWorld)
         publishToKafka(inTopic, "foo", recordBar)
         publishToKafka(inTopic, "baz", recordYaz)
@@ -101,15 +114,23 @@ class ExampleKafkaStreamsSpec
       stream.to(outTopic, Produced.`with`(stringSerde, avroSerde))
 
       runStreams(Seq(inTopic, outTopic), streamBuilder.build()) {
+        implicit val avroSerializer: Serializer[TestAvroClass] =
+          avroSerde.serializer
+
+        implicit val avroDeserializer: Deserializer[TestAvroClass] =
+          avroSerde.deserializer
+
         publishToKafka(inTopic, "hello", TestAvroClass("world"))
         publishToKafka(inTopic, "foo", TestAvroClass("bar"))
-        val consumer = newConsumer[String, TestAvroClass]()
-        consumer
-          .consumeLazily[(String, TestAvroClass)](outTopic)
-          .take(2) should be(
+
+        val records =
+          withConsumer[String, TestAvroClass, Seq[(String, TestAvroClass)]](
+            _.consumeLazily[(String, TestAvroClass)](outTopic).take(2)
+          )
+
+        records should be(
           Seq("hello" -> TestAvroClass("world"), "foo" -> TestAvroClass("bar"))
         )
-        consumer.close()
       }
     }
   }

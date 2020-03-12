@@ -3,7 +3,10 @@ package net.manub.embeddedkafka.schemaregistry
 import java.nio.file.{Files, Path}
 
 import net.manub.embeddedkafka.ops.{EmbeddedKafkaOps, RunningEmbeddedKafkaOps}
-import net.manub.embeddedkafka.schemaregistry.ops.{RunningSchemaRegistryOps, SchemaRegistryOps}
+import net.manub.embeddedkafka.schemaregistry.ops.{
+  RunningSchemaRegistryOps,
+  SchemaRegistryOps
+}
 import net.manub.embeddedkafka.{EmbeddedKafkaSupport, EmbeddedServer, EmbeddedZ}
 
 trait EmbeddedKafka
