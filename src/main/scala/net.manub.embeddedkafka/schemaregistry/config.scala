@@ -28,8 +28,8 @@ object EmbeddedKafkaConfig {
   implicit val defaultConfig: EmbeddedKafkaConfig = apply()
 
   def apply(
-      kafkaPort: Int = 6001,
-      zooKeeperPort: Int = 6000,
+      kafkaPort: Int = OriginalEmbeddedKafkaConfig.defaultKafkaPort,
+      zooKeeperPort: Int = OriginalEmbeddedKafkaConfig.defaultZookeeperPort,
       schemaRegistryPort: Int = defaultSchemaRegistryPort,
       avroCompatibilityLevel: AvroCompatibilityLevel =
         AvroCompatibilityLevel.NONE,

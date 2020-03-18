@@ -1,19 +1,28 @@
 package net.manub.embeddedkafka.schemaregistry
 
 import net.manub.embeddedkafka.Codecs._
-import net.manub.embeddedkafka.{TestAvroClass, duration2JavaDuration}
+import net.manub.embeddedkafka.TestAvroClass
 import net.manub.embeddedkafka.schemaregistry.EmbeddedKafka._
 import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaConfig.defaultConfig
-import org.apache.kafka.clients.producer.ProducerRecord
+import net.manub.embeddedkafka.schemaregistry.avro.AvroSerdes
+import org.apache.kafka.common.serialization.{Deserializer, Serde, Serializer}
 import org.scalatest.BeforeAndAfterAll
 
-import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 class EmbeddedKafkaSpec
     extends EmbeddedKafkaSpecSupport
     with BeforeAndAfterAll {
   val consumerPollTimeout: FiniteDuration = 5.seconds
+
+  val avroSerde: Serde[TestAvroClass] =
+    AvroSerdes.specific()
+
+  implicit val avroSerializer: Serializer[TestAvroClass] =
+    avroSerde.serializer
+
+  implicit val avroDeserializer: Deserializer[TestAvroClass] =
+    avroSerde.deserializer
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -31,17 +40,9 @@ class EmbeddedKafkaSpec
       val topic   = "publish_test_topic"
       publishToKafka(topic, message)
 
-      val consumer = kafkaConsumer[String, TestAvroClass]
-      consumer.subscribe(List(topic).asJava)
+      val record = consumeFirstMessageFrom[TestAvroClass](topic)
 
-      val records = consumer.poll(duration2JavaDuration(consumerPollTimeout))
-
-      records.iterator().hasNext shouldBe true
-      val record = records.iterator().next()
-
-      record.value() shouldBe message
-
-      consumer.close()
+      record shouldBe message
     }
 
     "publish synchronously a message with String key to Kafka storing its schema into Schema Registry" in {
@@ -51,18 +52,11 @@ class EmbeddedKafkaSpec
 
       publishToKafka(topic, key, message)
 
-      val consumer = kafkaConsumer[String, TestAvroClass]
-      consumer.subscribe(List(topic).asJava)
+      val (recordKey, recordValue) =
+        consumeFirstKeyedMessageFrom[String, TestAvroClass](topic)
 
-      val records = consumer.poll(duration2JavaDuration(consumerPollTimeout))
-
-      records.iterator().hasNext shouldBe true
-      val record = records.iterator().next()
-
-      record.key() shouldBe key
-      record.value() shouldBe message
-
-      consumer.close()
+      recordKey shouldBe key
+      recordValue shouldBe message
     }
 
     "publish synchronously a batch of messages with String keys to Kafka storing its schema into Schema Registry" in {
@@ -76,24 +70,19 @@ class EmbeddedKafkaSpec
 
       publishToKafka(topic, messages)
 
-      val consumer = kafkaConsumer[String, TestAvroClass]
-      consumer.subscribe(List(topic).asJava)
-
       val records =
-        consumer.poll(duration2JavaDuration(consumerPollTimeout)).iterator()
+        consumeNumberKeyedMessagesFrom[String, TestAvroClass](topic, number = 2)
 
-      records.hasNext shouldBe true
+      records.size shouldBe 2
 
-      val record1 = records.next()
-      record1.key() shouldBe key1
-      record1.value() shouldBe message1
+      val (record1Key, record1Value) :: (record2Key, record2Value) :: Nil =
+        records
 
-      records.hasNext shouldBe true
-      val record2 = records.next()
-      record2.key() shouldBe key2
-      record2.value() shouldBe message2
+      record1Key shouldBe key1
+      record1Value shouldBe message1
 
-      consumer.close()
+      record2Key shouldBe key2
+      record2Value shouldBe message2
     }
   }
 
@@ -102,12 +91,11 @@ class EmbeddedKafkaSpec
       val message = TestAvroClass("name")
       val topic   = "consume_test_topic"
 
-      val producer = aKafkaProducer[TestAvroClass]
-      producer.send(new ProducerRecord[String, TestAvroClass](topic, message))
+      publishToKafka(topic, message)
 
-      consumeFirstMessageFrom[TestAvroClass](topic) shouldBe message
+      val record = consumeFirstMessageFrom[TestAvroClass](topic)
 
-      producer.close()
+      record shouldBe message
     }
   }
 
@@ -117,16 +105,11 @@ class EmbeddedKafkaSpec
       val message = TestAvroClass("name")
       val topic   = "consume_test_topic"
 
-      val producer = aKafkaProducer[TestAvroClass]
-      producer.send(
-        new ProducerRecord[String, TestAvroClass](topic, key, message)
-      )
+      publishToKafka(topic, key, message)
 
       val (k, m) = consumeFirstKeyedMessageFrom[String, TestAvroClass](topic)
       k shouldBe key
       m shouldBe message
-
-      producer.close()
     }
   }
 
@@ -136,12 +119,11 @@ class EmbeddedKafkaSpec
         "topic1" -> List(TestAvroClass("name")),
         "topic2" -> List(TestAvroClass("other name"))
       )
-      val producer = aKafkaProducer[TestAvroClass]
-      for ((topic, messages) <- topicMessagesMap; message <- messages) {
-        producer.send(new ProducerRecord[String, TestAvroClass](topic, message))
-      }
 
-      producer.flush()
+      topicMessagesMap.foreach {
+        case (topic, messages) =>
+          messages.foreach(publishToKafka(topic, _))
+      }
 
       val consumedMessages =
         consumeNumberMessagesFromTopics[TestAvroClass](
@@ -150,8 +132,6 @@ class EmbeddedKafkaSpec
         )
 
       consumedMessages shouldEqual topicMessagesMap
-
-      producer.close()
     }
   }
 
@@ -165,12 +145,11 @@ class EmbeddedKafkaSpec
             ("m2b", TestAvroClass("even another name"))
           )
         )
-      val producer = aKafkaProducer[TestAvroClass]
-      for ((topic, messages) <- topicMessagesMap; (k, v) <- messages) {
-        producer.send(new ProducerRecord[String, TestAvroClass](topic, k, v))
-      }
 
-      producer.flush()
+      topicMessagesMap.foreach {
+        case (topic, keyedMessages) =>
+          keyedMessages.foreach { case (k, v) => publishToKafka(topic, k, v) }
+      }
 
       val consumedMessages =
         consumeNumberKeyedMessagesFromTopics[String, TestAvroClass](
@@ -179,8 +158,6 @@ class EmbeddedKafkaSpec
         )
 
       consumedMessages shouldEqual topicMessagesMap
-
-      producer.close()
     }
   }
 }

@@ -1,13 +1,13 @@
 package net.manub.embeddedkafka.schemaregistry
 
+import java.nio.file.{Files, Path}
+
 import net.manub.embeddedkafka.ops.{EmbeddedKafkaOps, RunningEmbeddedKafkaOps}
 import net.manub.embeddedkafka.schemaregistry.ops.{
   RunningSchemaRegistryOps,
   SchemaRegistryOps
 }
 import net.manub.embeddedkafka.{EmbeddedKafkaSupport, EmbeddedServer, EmbeddedZ}
-
-import scala.reflect.io.Directory
 
 trait EmbeddedKafka
     extends EmbeddedKafkaSupport[EmbeddedKafkaConfig]
@@ -26,7 +26,7 @@ trait EmbeddedKafka
   override private[embeddedkafka] def withRunningServers[T](
       config: EmbeddedKafkaConfig,
       actualZkPort: Int,
-      kafkaLogsDir: Directory
+      kafkaLogsDir: Path
   )(body: EmbeddedKafkaConfig => T): T = {
     val broker =
       startKafka(
@@ -69,8 +69,8 @@ object EmbeddedKafka
   override def start()(
       implicit config: EmbeddedKafkaConfig
   ): EmbeddedKWithSR = {
-    val zkLogsDir    = Directory.makeTemp("zookeeper-logs")
-    val kafkaLogsDir = Directory.makeTemp("kafka-logs")
+    val zkLogsDir    = Files.createTempDirectory("zookeeper-logs")
+    val kafkaLogsDir = Files.createTempDirectory("kafka-logs")
 
     val factory =
       EmbeddedZ(startZooKeeper(config.zooKeeperPort, zkLogsDir), zkLogsDir)

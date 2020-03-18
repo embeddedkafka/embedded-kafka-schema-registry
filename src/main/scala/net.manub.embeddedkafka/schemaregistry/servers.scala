@@ -1,5 +1,7 @@
 package net.manub.embeddedkafka.schemaregistry
 
+import java.nio.file.Path
+
 import io.confluent.kafka.schemaregistry.RestApp
 import kafka.server.KafkaServer
 import net.manub.embeddedkafka.{
@@ -27,7 +29,7 @@ case class EmbeddedKWithSR(
     factory: Option[EmbeddedZ],
     broker: KafkaServer,
     app: EmbeddedSR,
-    logsDirs: Directory
+    logsDirs: Path
 )(implicit config: EmbeddedKafkaConfig)
     extends EmbeddedServerWithKafka {
   override def stop(clearLogs: Boolean): Unit = {
@@ -38,6 +40,6 @@ case class EmbeddedKWithSR(
 
     factory.foreach(_.stop(clearLogs))
 
-    if (clearLogs) logsDirs.deleteRecursively()
+    if (clearLogs) Directory(logsDirs.toFile).deleteRecursively
   }
 }
