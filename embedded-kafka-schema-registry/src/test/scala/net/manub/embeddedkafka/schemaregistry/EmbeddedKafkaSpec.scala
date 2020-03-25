@@ -148,7 +148,7 @@ class EmbeddedKafkaSpec
           topicMessagesMap.values.map(_.size).sum
         )
 
-      consumedMessages shouldEqual topicMessagesMap
+      consumedMessages.toMap shouldEqual topicMessagesMap
     }
   }
 
@@ -174,7 +174,7 @@ class EmbeddedKafkaSpec
           topicMessagesMap.values.map(_.size).sum
         )
 
-      consumedMessages shouldEqual topicMessagesMap
+      consumedMessages.toMap shouldEqual topicMessagesMap
     }
   }
 }
