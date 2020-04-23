@@ -71,16 +71,17 @@ lazy val commonSettings = Seq(
 
 // Exclude any transitive Kafka dependency to prevent runtime errors.
 // They tend to evict Apache's since their version is greater
-lazy val excludeTransitiveKafkaDeps: ModuleID => ModuleID = _ excludeAll(ExclusionRule().withOrganization("org.apache.kafka"))
+lazy val confluentArtifacts = Seq(
+  "io.confluent" % "kafka-avro-serializer" % confluentVersion,
+  "io.confluent" % "kafka-schema-registry" % confluentVersion,
+  "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests"
+).map(_ excludeAll ExclusionRule().withOrganization("org.apache.kafka"))
 
 lazy val commonLibrarySettings = libraryDependencies ++= Seq(
   "io.github.embeddedkafka" %% "embedded-kafka-streams" % embeddedKafkaVersion,
-  excludeTransitiveKafkaDeps("io.confluent" % "kafka-avro-serializer" % confluentVersion),
-  excludeTransitiveKafkaDeps("io.confluent" % "kafka-schema-registry" % confluentVersion),
-  excludeTransitiveKafkaDeps("io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests"),
   "org.slf4j" % "slf4j-log4j12" % "1.7.30" % Test,
   "org.scalatest" %% "scalatest" % "3.1.1" % Test
-)
+) ++ confluentArtifacts
 
 lazy val root = (project in file("."))
   .settings(name := "embedded-kafka-schema-registry")
