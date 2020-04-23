@@ -1,7 +1,7 @@
 import sbtrelease.Version
 
 val embeddedKafkaVersion = "2.5.0"
-val confluentVersion = "5.4.1"
+val confluentVersion = "5.5.0"
 
 lazy val publishSettings = Seq(
   licenses += ("MIT", url("https://opensource.org/licenses/MIT")),
@@ -47,11 +47,18 @@ lazy val releaseSettings = Seq(
   releaseCrossBuild := true
 )
 
+lazy val confluentResolvers = Seq(
+  "confluent" at "https://packages.confluent.io/maven/",
+  // Since v5.5.0
+  "jitpack" at "https://jitpack.io"
+)
+
 lazy val commonSettings = Seq(
   organization := "io.github.embeddedkafka",
   scalaVersion := "2.12.10",
   crossScalaVersions := Seq("2.12.10"),
   homepage := Some(url("https://github.com/embeddedkafka/embedded-kafka-schema-registry")),
+  resolvers ++= confluentResolvers,
   parallelExecution in Test := false,
   logBuffered in Test := false,
   fork in Test := true,
@@ -89,7 +96,3 @@ lazy val root = (project in file("."))
   .settings(commonSettings: _*)
   .settings(commonLibrarySettings)
   .settings(releaseSettings: _*)
-  .settings(resolvers ++= Seq(
-    "confluent" at "https://packages.confluent.io/maven/",
-    Resolver.sonatypeRepo("snapshots")
-  ))

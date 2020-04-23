@@ -21,7 +21,15 @@ Versions match the version of Confluent Schema Registry they're built against.
 
 ## How to use
 
-* In your `build.sbt` file add the following resolver: `resolvers += "confluent" at "https://packages.confluent.io/maven/"`
+* In your `build.sbt` file add the following resolvers:
+
+```scala
+resolvers ++= Seq(
+  "confluent" at "https://packages.confluent.io/maven/",
+  "jitpack" at "https://jitpack.io"
+)
+```
+
 * In your `build.sbt` file add the following dependency (replace `x.x.x` with the appropriate version): `"io.github.embeddedkafka" %% "embedded-kafka-schema-registry" % "x.x.x" % Test`
 * Have your class extend the `EmbeddedKafka` trait (from the `net.manub.embeddedkafka.schemaregistry` package).
 * Enclose the code that needs a running instance of Kafka within the `withRunningKafka` closure.
