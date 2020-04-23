@@ -1,6 +1,6 @@
 import sbtrelease.Version
 
-val embeddedKafkaVersion = "2.4.1.1"
+val embeddedKafkaVersion = "2.5.0"
 val confluentVersion = "5.4.1"
 
 lazy val publishSettings = Seq(
@@ -50,7 +50,7 @@ lazy val releaseSettings = Seq(
 lazy val commonSettings = Seq(
   organization := "io.github.embeddedkafka",
   scalaVersion := "2.12.10",
-  crossScalaVersions := Seq("2.12.10", "2.11.12"),
+  crossScalaVersions := Seq("2.12.10"),
   homepage := Some(url("https://github.com/embeddedkafka/embedded-kafka-schema-registry")),
   parallelExecution in Test := false,
   logBuffered in Test := false,
