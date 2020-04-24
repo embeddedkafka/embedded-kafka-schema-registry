@@ -1,6 +1,6 @@
 import sbtrelease.Version
 
-val embeddedKafkaVersion = "2.4.1.1"
+val embeddedKafkaVersion = "2.5.0"
 val confluentVersion = "5.4.1"
 
 lazy val publishSettings = Seq(
@@ -50,7 +50,7 @@ lazy val releaseSettings = Seq(
 lazy val commonSettings = Seq(
   organization := "io.github.embeddedkafka",
   scalaVersion := "2.12.10",
-  crossScalaVersions := Seq("2.12.10", "2.11.12"),
+  crossScalaVersions := Seq("2.12.10"),
   homepage := Some(url("https://github.com/embeddedkafka/embedded-kafka-schema-registry")),
   parallelExecution in Test := false,
   logBuffered in Test := false,
@@ -69,15 +69,19 @@ lazy val commonSettings = Seq(
   scalafmtOnCompile := true
 )
 
+// Exclude any transitive Kafka dependency to prevent runtime errors.
+// They tend to evict Apache's since their version is greater
+lazy val confluentArtifacts = Seq(
+  "io.confluent" % "kafka-avro-serializer" % confluentVersion,
+  "io.confluent" % "kafka-schema-registry" % confluentVersion,
+  "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests"
+).map(_ excludeAll ExclusionRule().withOrganization("org.apache.kafka"))
+
 lazy val commonLibrarySettings = libraryDependencies ++= Seq(
   "io.github.embeddedkafka" %% "embedded-kafka-streams" % embeddedKafkaVersion,
-  // Exclude any transitive 2.12-specific dependency
-  "io.confluent" % "kafka-avro-serializer" % confluentVersion exclude("org.apache.kafka", "kafka_2.12"),
-  "io.confluent" % "kafka-schema-registry" % confluentVersion exclude("org.apache.kafka", "kafka_2.12"),
-  "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests" exclude("org.apache.kafka", "kafka_2.12"),
   "org.slf4j" % "slf4j-log4j12" % "1.7.30" % Test,
   "org.scalatest" %% "scalatest" % "3.1.1" % Test
-)
+) ++ confluentArtifacts
 
 lazy val root = (project in file("."))
   .settings(name := "embedded-kafka-schema-registry")
