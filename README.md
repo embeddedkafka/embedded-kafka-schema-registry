@@ -2,7 +2,8 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.12)
 ![Build](https://github.com/embeddedkafka/embedded-kafka-schema-registry/workflows/Build/badge.svg)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7cb0fdc1aec14d26b1e9954c129b93fe?branch=master)](https://www.codacy.com/app/francescopellegrini/embedded-kafka-schema-registry)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ea9c18f6d1f547a599d76102cd0e709a)](https://www.codacy.com/gh/embeddedkafka/embedded-kafka-schema-registry)
+[![Codacy Coverage Badge](https://api.codacy.com/project/badge/Coverage/ea9c18f6d1f547a599d76102cd0e709a)](https://www.codacy.com/gh/embeddedkafka/embedded-kafka-schema-registry)
 [![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 
 A library that provides in-memory instances of both Kafka and [Confluent Schema Registry](https://docs.confluent.io/current/schema-registry/docs/index.html) to run your tests against.
