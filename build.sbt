@@ -67,9 +67,7 @@ lazy val commonSettings = Seq(
     "-Ywarn-unused"
   ),
   scalafmtOnCompile := true,
-  coverageEnabled := true,
-  coverageMinimum := 80,
-  coverageFailOnMinimum := false
+  coverageMinimum := 80
 )
 
 // Exclude any transitive Kafka dependency to prevent runtime errors.
