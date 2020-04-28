@@ -56,9 +56,7 @@ class MySpec extends AnyWordSpecLike with Matchers with EmbeddedKafka {
 
 ## Utility methods
 
-~~The `net.manub.embeddedkafka.avro.schemaregistry` package object provides useful implicit converters for testing with Avro and Schema Registry.~~
-
-The implicit Avro serdes have been deprecated. Please use `AvroSerdes` instead.
+`net.manub.embeddedkafka.schemaregistry.avro.AvroSerdes` provides utility methods for building Avro Serdes.
 
 ## Using streams
 
