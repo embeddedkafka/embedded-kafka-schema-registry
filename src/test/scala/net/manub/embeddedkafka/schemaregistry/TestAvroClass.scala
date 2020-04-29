@@ -1,7 +1,4 @@
-/**
-  * Cloned from embeddedkafka project
-  */
-package net.manub.embeddedkafka
+package net.manub.embeddedkafka.schemaregistry
 
 import org.apache.avro.specific.SpecificRecordBase
 import org.apache.avro.{AvroRuntimeException, Schema}
@@ -28,14 +25,14 @@ case class TestAvroClass(var name: String) extends SpecificRecordBase {
 
 object TestAvroClass {
   val SCHEMA$ =
-    (new Schema.Parser).parse("""
-                                |{"namespace": "example",
-                                | "type": "record",
-                                | "namespace": "net.manub.embeddedkafka",
-                                | "name": "TestAvroClass",
-                                | "fields": [
-                                |     {"name": "name", "type": "string"}
-                                | ]
-                                |}
-                              """.stripMargin)
+    (new Schema.Parser)
+      .parse("""
+                |{"namespace": "net.manub.embeddedkafka.schemaregistry",
+                | "type": "record",
+                | "name": "TestAvroClass",
+                | "fields": [
+                |   {"name": "name", "type": "string"}
+                | ]
+                |}
+              """.stripMargin)
 }

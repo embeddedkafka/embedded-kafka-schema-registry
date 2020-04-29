@@ -1,13 +1,18 @@
 package net.manub.embeddedkafka.schemaregistry
 
+import io.confluent.kafka.serializers.{
+  AbstractKafkaSchemaSerDeConfig,
+  KafkaAvroDeserializer,
+  KafkaAvroDeserializerConfig,
+  KafkaAvroSerializer
+}
 import net.manub.embeddedkafka.Codecs._
-import net.manub.embeddedkafka.TestAvroClass
 import net.manub.embeddedkafka.schemaregistry.EmbeddedKafka._
 import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaConfig.defaultConfig
-import net.manub.embeddedkafka.schemaregistry.avro.AvroSerdes
-import org.apache.kafka.common.serialization.{Deserializer, Serde, Serializer}
+import org.apache.kafka.common.serialization.{Deserializer, Serializer}
 import org.scalatest.BeforeAndAfterAll
 
+import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 
 class EmbeddedKafkaSpec
@@ -15,14 +20,26 @@ class EmbeddedKafkaSpec
     with BeforeAndAfterAll {
   val consumerPollTimeout: FiniteDuration = 5.seconds
 
-  val avroSerde: Serde[TestAvroClass] =
-    AvroSerdes.specific()
+  implicit val serializer: Serializer[TestAvroClass] = {
+    val props = Map(
+      AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${defaultConfig.schemaRegistryPort}"
+    )
 
-  implicit val avroSerializer: Serializer[TestAvroClass] =
-    avroSerde.serializer
+    val ser = new KafkaAvroSerializer
+    ser.configure(props.asJava, false)
+    ser.asInstanceOf[Serializer[TestAvroClass]]
+  }
 
-  implicit val avroDeserializer: Deserializer[TestAvroClass] =
-    avroSerde.deserializer
+  implicit val deserializer: Deserializer[TestAvroClass] = {
+    val props = Map(
+      AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${defaultConfig.schemaRegistryPort}",
+      KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG   -> true.toString
+    )
+
+    val ser = new KafkaAvroDeserializer
+    ser.configure(props.asJava, false)
+    ser.asInstanceOf[Deserializer[TestAvroClass]]
+  }
 
   override def beforeAll(): Unit = {
     super.beforeAll()

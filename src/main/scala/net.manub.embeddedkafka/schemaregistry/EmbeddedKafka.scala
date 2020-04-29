@@ -16,12 +16,12 @@ trait EmbeddedKafka
   override private[embeddedkafka] def baseConsumerConfig(
       implicit config: EmbeddedKafkaConfig
   ): Map[String, Object] =
-    defaultConsumerConfig ++ configForSchemaRegistry ++ config.customConsumerProperties
+    defaultConsumerConfig ++ config.customConsumerProperties
 
   override private[embeddedkafka] def baseProducerConfig(
       implicit config: EmbeddedKafkaConfig
   ): Map[String, Object] =
-    defaultProducerConf ++ configForSchemaRegistry ++ config.customProducerProperties
+    defaultProducerConf ++ config.customProducerProperties
 
   override private[embeddedkafka] def withRunningServers[T](
       config: EmbeddedKafkaConfig,
@@ -38,7 +38,7 @@ trait EmbeddedKafka
     val restApp = startSchemaRegistry(
       config.schemaRegistryPort,
       actualZkPort,
-      config.avroCompatibilityLevel
+      config.compatibilityLevel
     )
     val actualSchemaRegistryPort = restApp.restServer.getURI.getPort
 
@@ -46,7 +46,7 @@ trait EmbeddedKafka
       EmbeddedKafka.kafkaPort(broker),
       actualZkPort,
       actualSchemaRegistryPort,
-      config.avroCompatibilityLevel,
+      config.compatibilityLevel,
       config.customBrokerProperties,
       config.customProducerProperties,
       config.customConsumerProperties
@@ -79,7 +79,7 @@ object EmbeddedKafka
       config.kafkaPort,
       zookeeperPort(factory),
       config.schemaRegistryPort,
-      config.avroCompatibilityLevel,
+      config.compatibilityLevel,
       config.customBrokerProperties,
       config.customProducerProperties,
       config.customConsumerProperties
@@ -91,7 +91,7 @@ object EmbeddedKafka
       startSchemaRegistry(
         configWithUsedZooKeeperPort.schemaRegistryPort,
         configWithUsedZooKeeperPort.zooKeeperPort,
-        configWithUsedZooKeeperPort.avroCompatibilityLevel
+        configWithUsedZooKeeperPort.compatibilityLevel
       )
     )
 

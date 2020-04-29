@@ -1,20 +1,20 @@
 package net.manub.embeddedkafka.schemaregistry
 
-import io.confluent.kafka.schemaregistry.avro.AvroCompatibilityLevel
+import io.confluent.kafka.schemaregistry.CompatibilityLevel
 import net.manub.embeddedkafka.{
   EmbeddedKafkaConfig => OriginalEmbeddedKafkaConfig
 }
 
 trait EmbeddedKafkaConfig extends OriginalEmbeddedKafkaConfig {
   def schemaRegistryPort: Int
-  def avroCompatibilityLevel: AvroCompatibilityLevel
+  def compatibilityLevel: CompatibilityLevel
 }
 
 case class EmbeddedKafkaConfigImpl(
     kafkaPort: Int,
     zooKeeperPort: Int,
     schemaRegistryPort: Int,
-    avroCompatibilityLevel: AvroCompatibilityLevel,
+    compatibilityLevel: CompatibilityLevel,
     customBrokerProperties: Map[String, String],
     customProducerProperties: Map[String, String],
     customConsumerProperties: Map[String, String]
@@ -31,8 +31,7 @@ object EmbeddedKafkaConfig {
       kafkaPort: Int = OriginalEmbeddedKafkaConfig.defaultKafkaPort,
       zooKeeperPort: Int = OriginalEmbeddedKafkaConfig.defaultZookeeperPort,
       schemaRegistryPort: Int = defaultSchemaRegistryPort,
-      avroCompatibilityLevel: AvroCompatibilityLevel =
-        AvroCompatibilityLevel.NONE,
+      compatibilityLevel: CompatibilityLevel = CompatibilityLevel.NONE,
       customBrokerProperties: Map[String, String] = Map.empty,
       customProducerProperties: Map[String, String] = Map.empty,
       customConsumerProperties: Map[String, String] = Map.empty
@@ -41,7 +40,7 @@ object EmbeddedKafkaConfig {
       kafkaPort,
       zooKeeperPort,
       schemaRegistryPort,
-      avroCompatibilityLevel,
+      compatibilityLevel,
       customBrokerProperties,
       customProducerProperties,
       customConsumerProperties

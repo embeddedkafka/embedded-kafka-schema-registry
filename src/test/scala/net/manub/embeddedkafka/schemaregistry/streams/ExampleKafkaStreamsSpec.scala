@@ -1,12 +1,19 @@
 package net.manub.embeddedkafka.schemaregistry.streams
 
-import io.confluent.kafka.schemaregistry.avro.AvroCompatibilityLevel
+import io.confluent.kafka.schemaregistry.CompatibilityLevel
+import io.confluent.kafka.serializers.{
+  AbstractKafkaSchemaSerDeConfig,
+  KafkaAvroDeserializer,
+  KafkaAvroDeserializerConfig,
+  KafkaAvroSerializer
+}
 import net.manub.embeddedkafka.Codecs._
 import net.manub.embeddedkafka.ConsumerExtensions._
-import net.manub.embeddedkafka.TestAvroClass
-import net.manub.embeddedkafka.schemaregistry.avro.Codecs._
-import net.manub.embeddedkafka.schemaregistry.avro.AvroSerdes
-import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaConfig
+import net.manub.embeddedkafka.schemaregistry.Codecs._
+import net.manub.embeddedkafka.schemaregistry.{
+  EmbeddedKafkaConfig,
+  TestAvroClass
+}
 import net.manub.embeddedkafka.schemaregistry.streams.EmbeddedKafkaStreams._
 import org.apache.avro.Schema
 import org.apache.avro.generic.{GenericRecord, GenericRecordBuilder}
@@ -16,35 +23,64 @@ import org.apache.kafka.streams.kstream.{Consumed, KStream, Produced}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
+import scala.collection.JavaConverters._
+
 class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
   implicit val config: EmbeddedKafkaConfig =
     EmbeddedKafkaConfig(
       kafkaPort = 7000,
       zooKeeperPort = 7001,
       schemaRegistryPort = 7002,
-      avroCompatibilityLevel = AvroCompatibilityLevel.FULL
+      compatibilityLevel = CompatibilityLevel.FULL
     )
+
+  private def avroSerde[T](props: Map[String, AnyRef]): Serde[T] = {
+    val ser = new KafkaAvroSerializer
+    ser.configure(props.asJava, false)
+    val deser = new KafkaAvroDeserializer
+    deser.configure(props.asJava, false)
+
+    Serdes.serdeFrom(
+      ser.asInstanceOf[Serializer[T]],
+      deser.asInstanceOf[Deserializer[T]]
+    )
+  }
 
   val (inTopic, outTopic) = ("in", "out")
 
   val stringSerde: Serde[String] = Serdes.String
-  val avroSerde: Serde[TestAvroClass] =
-    AvroSerdes.specific[TestAvroClass]()
+  val specificAvroSerde: Serde[TestAvroClass] = {
+    val props = Map(
+      AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${config.schemaRegistryPort}",
+      KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG   -> true.toString
+    )
+
+    avroSerde(props)
+  }
+  val genericAvroSerde: Serde[GenericRecord] = {
+    val props = Map(
+      AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${config.schemaRegistryPort}"
+    )
+    avroSerde(props)
+  }
 
   "A Kafka streams test using Schema Registry" should {
     "support kafka streams and specific record" in {
       val streamBuilder = new StreamsBuilder
       val stream: KStream[String, TestAvroClass] =
-        streamBuilder.stream(inTopic, Consumed.`with`(stringSerde, avroSerde))
+        streamBuilder.stream(
+          inTopic,
+          Consumed.`with`(stringSerde, specificAvroSerde)
+        )
 
-      stream.to(outTopic, Produced.`with`(stringSerde, avroSerde))
+      stream.to(outTopic, Produced.`with`(stringSerde, specificAvroSerde))
 
       runStreams(Seq(inTopic, outTopic), streamBuilder.build()) {
         implicit val avroSerializer: Serializer[TestAvroClass] =
-          avroSerde.serializer
+          specificAvroSerde.serializer
 
         implicit val avroDeserializer: Deserializer[TestAvroClass] =
-          avroSerde.deserializer
+          specificAvroSerde.deserializer
 
         publishToKafka(inTopic, "hello", TestAvroClass("world"))
         publishToKafka(inTopic, "foo", TestAvroClass("bar"))
@@ -72,8 +108,6 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
         new GenericRecordBuilder(schema).set("name", "bar").build()
       val recordYaz: GenericRecord =
         new GenericRecordBuilder(schema).set("name", "yaz").build()
-
-      val genericAvroSerde = AvroSerdes.generic()
 
       val streamBuilder = new StreamsBuilder
       val stream: KStream[String, GenericRecord] =
@@ -109,16 +143,19 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
     "allow support creating custom consumers" in {
       val streamBuilder = new StreamsBuilder
       val stream: KStream[String, TestAvroClass] =
-        streamBuilder.stream(inTopic, Consumed.`with`(stringSerde, avroSerde))
+        streamBuilder.stream(
+          inTopic,
+          Consumed.`with`(stringSerde, specificAvroSerde)
+        )
 
-      stream.to(outTopic, Produced.`with`(stringSerde, avroSerde))
+      stream.to(outTopic, Produced.`with`(stringSerde, specificAvroSerde))
 
       runStreams(Seq(inTopic, outTopic), streamBuilder.build()) {
         implicit val avroSerializer: Serializer[TestAvroClass] =
-          avroSerde.serializer
+          specificAvroSerde.serializer
 
         implicit val avroDeserializer: Deserializer[TestAvroClass] =
-          avroSerde.deserializer
+          specificAvroSerde.deserializer
 
         publishToKafka(inTopic, "hello", TestAvroClass("world"))
         publishToKafka(inTopic, "foo", TestAvroClass("bar"))
