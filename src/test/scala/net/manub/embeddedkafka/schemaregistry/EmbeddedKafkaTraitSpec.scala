@@ -1,8 +1,10 @@
 package net.manub.embeddedkafka.schemaregistry
 
-import io.confluent.kafka.schemaregistry.CompatibilityLevel
 import net.manub.embeddedkafka.schemaregistry.EmbeddedKafka._
-import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaSpecSupport.{Available, NotAvailable}
+import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaSpecSupport.{
+  Available,
+  NotAvailable
+}
 
 class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
   "the withRunningKafka method" should {
@@ -30,8 +32,7 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
         EmbeddedKafkaConfig(
           kafkaPort = 12345,
           zooKeeperPort = 12346,
-          schemaRegistryPort = 12347,
-          compatibilityLevel = CompatibilityLevel.NONE
+          schemaRegistryPort = 12347
         )
 
       val actualConfig = withRunningKafkaOnFoundPort(userDefinedConfig) {

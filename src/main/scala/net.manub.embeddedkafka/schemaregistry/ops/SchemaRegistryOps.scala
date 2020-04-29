@@ -1,33 +1,30 @@
 package net.manub.embeddedkafka.schemaregistry.ops
 
-import java.net.ServerSocket
+import java.net.{ServerSocket, URI}
 import java.util.Properties
 
-import io.confluent.kafka.schemaregistry.{CompatibilityLevel, RestApp}
+import io.confluent.kafka.schemaregistry.rest.{
+  SchemaRegistryConfig,
+  SchemaRegistryRestApplication
+}
+import io.confluent.rest.RestConfig
 import net.manub.embeddedkafka.EmbeddedServer
 import net.manub.embeddedkafka.ops.RunningServersOps
 import net.manub.embeddedkafka.schemaregistry.{EmbeddedKafkaConfig, EmbeddedSR}
 
+import scala.collection.JavaConverters._
+
 /**
   * Trait for Schema Registry-related actions.
-  * Relies on [[RestApp]].
+  * Relies on [[SchemaRegistryRestApplication]].
   */
 trait SchemaRegistryOps {
 
-  /**
-    * Starts a Schema Registry instance.
-    *
-    * @param schemaRegistryPort the port to run Schema Registry on, if 0 an available port will be used
-    * @param zooKeeperPort      the port ZooKeeper is running on
-    * @param compatibilityLevel the schema compatibility level
-    * @param properties         additional [[Properties]]
-    */
-  def startSchemaRegistry(
+  private[embeddedkafka] def startSchemaRegistry(
       schemaRegistryPort: Int,
-      zooKeeperPort: Int,
-      compatibilityLevel: CompatibilityLevel = CompatibilityLevel.NONE,
-      properties: Properties = new Properties
-  ): RestApp = {
+      kafkaPort: Int,
+      customProperties: Map[String, String]
+  ): SchemaRegistryRestApplication = {
     def findAvailablePort: Int = {
       val server = new ServerSocket(0)
       val port   = server.getLocalPort
@@ -38,15 +35,20 @@ trait SchemaRegistryOps {
     val actualSchemaRegistryPort =
       if (schemaRegistryPort == 0) findAvailablePort else schemaRegistryPort
 
-    val server = new RestApp(
-      actualSchemaRegistryPort,
-      s"localhost:$zooKeeperPort",
-      "_schemas",
-      compatibilityLevel.name,
-      properties
+    val props = new Properties
+    props.putAll(customProperties.asJava)
+    props.put(
+      RestConfig.LISTENERS_CONFIG,
+      s"http://localhost:$actualSchemaRegistryPort"
     )
-    server.start()
-    server
+    props.put(
+      SchemaRegistryConfig.KAFKASTORE_BOOTSTRAP_SERVERS_CONFIG,
+      s"localhost:$kafkaPort"
+    )
+
+    val restApp = new SchemaRegistryRestApplication(props)
+    restApp.start()
+    restApp
   }
 }
 
@@ -63,8 +65,8 @@ trait RunningSchemaRegistryOps {
     val restApp = EmbeddedSR(
       startSchemaRegistry(
         config.schemaRegistryPort,
-        config.zooKeeperPort,
-        config.compatibilityLevel
+        config.kafkaPort,
+        config.customSchemaRegistryProperties
       )
     )
     runningServers.add(restApp)
@@ -79,4 +81,13 @@ trait RunningSchemaRegistryOps {
 
   private[embeddedkafka] def isEmbeddedSR(server: EmbeddedServer): Boolean =
     server.isInstanceOf[EmbeddedSR]
+
+  private[embeddedkafka] def schemaRegistryPort(
+      restApp: SchemaRegistryRestApplication
+  ): Int = {
+    val listeners = restApp.getConfiguration.originalProperties
+      .getProperty(RestConfig.LISTENERS_CONFIG)
+    URI.create(listeners).getPort
+  }
+
 }

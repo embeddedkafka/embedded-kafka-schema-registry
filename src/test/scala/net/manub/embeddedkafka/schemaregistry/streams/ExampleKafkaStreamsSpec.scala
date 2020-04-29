@@ -1,6 +1,5 @@
 package net.manub.embeddedkafka.schemaregistry.streams
 
-import io.confluent.kafka.schemaregistry.CompatibilityLevel
 import io.confluent.kafka.serializers.{
   AbstractKafkaSchemaSerDeConfig,
   KafkaAvroDeserializer,
@@ -30,8 +29,7 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
     EmbeddedKafkaConfig(
       kafkaPort = 7000,
       zooKeeperPort = 7001,
-      schemaRegistryPort = 7002,
-      compatibilityLevel = CompatibilityLevel.FULL
+      schemaRegistryPort = 7002
     )
 
   private def avroSerde[T](props: Map[String, AnyRef]): Serde[T] = {

@@ -1,23 +1,22 @@
 package net.manub.embeddedkafka.schemaregistry
 
-import io.confluent.kafka.schemaregistry.CompatibilityLevel
 import net.manub.embeddedkafka.{
   EmbeddedKafkaConfig => OriginalEmbeddedKafkaConfig
 }
 
 trait EmbeddedKafkaConfig extends OriginalEmbeddedKafkaConfig {
   def schemaRegistryPort: Int
-  def compatibilityLevel: CompatibilityLevel
+  def customSchemaRegistryProperties: Map[String, String]
 }
 
 case class EmbeddedKafkaConfigImpl(
     kafkaPort: Int,
     zooKeeperPort: Int,
     schemaRegistryPort: Int,
-    compatibilityLevel: CompatibilityLevel,
     customBrokerProperties: Map[String, String],
     customProducerProperties: Map[String, String],
-    customConsumerProperties: Map[String, String]
+    customConsumerProperties: Map[String, String],
+    customSchemaRegistryProperties: Map[String, String]
 ) extends EmbeddedKafkaConfig {
   override val numberOfThreads: Int = 3
 }
@@ -31,18 +30,18 @@ object EmbeddedKafkaConfig {
       kafkaPort: Int = OriginalEmbeddedKafkaConfig.defaultKafkaPort,
       zooKeeperPort: Int = OriginalEmbeddedKafkaConfig.defaultZookeeperPort,
       schemaRegistryPort: Int = defaultSchemaRegistryPort,
-      compatibilityLevel: CompatibilityLevel = CompatibilityLevel.NONE,
       customBrokerProperties: Map[String, String] = Map.empty,
       customProducerProperties: Map[String, String] = Map.empty,
-      customConsumerProperties: Map[String, String] = Map.empty
+      customConsumerProperties: Map[String, String] = Map.empty,
+      customSchemaRegistryProperties: Map[String, String] = Map.empty
   ): EmbeddedKafkaConfig =
     EmbeddedKafkaConfigImpl(
       kafkaPort,
       zooKeeperPort,
       schemaRegistryPort,
-      compatibilityLevel,
       customBrokerProperties,
       customProducerProperties,
-      customConsumerProperties
+      customConsumerProperties,
+      customSchemaRegistryProperties
     )
 }
