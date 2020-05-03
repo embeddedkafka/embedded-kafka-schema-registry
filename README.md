@@ -20,7 +20,9 @@ Currently there's no support for Scala 2.13 as Confluent artifacts are not publi
 
 Versions match the version of Confluent Schema Registry they're built against.
 
-## How to use
+## embedded-kafka-schema-registry
+
+### How to use
 
 * In your `build.sbt` file add the following resolvers:
 
@@ -54,13 +56,20 @@ class MySpec extends AnyWordSpecLike with Matchers with EmbeddedKafka {
 
 * In-memory Zookeeper, Kafka, and Schema Registry will be instantiated respectively on port 6000, 6001, and 6002 and automatically shutdown at the end of the test.
 
-## ~~Utility methods~~
+### ~~Utility methods~~
 
 ~~.`net.manub.embeddedkafka.schemaregistry.avro.AvroSerdes` provides utility methods for building Avro Serdes.~~
 
 Now that Schema Registry supports more than one serialization format, Avro-related classes will be removed in the near future.
 
-## Using streams
+## embedded-kafka-schema-registry-streams
 
+A library that builds on top of `embedded-kafka-schema-registry` to offer easy testing of [Kafka Streams](https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Streams) with Confluent Schema Registry.
+
+It takes care of instantiating and starting your streams as well as closing them after running your test-case code.
+
+### How to use
+
+* In your `build.sbt` file add the following dependency (replace `x.x.x` with the appropriate version): `"io.github.embeddedkafka" %% "embedded-kafka-schema-registry-streams" % "x.x.x" % Test`
 * For most of the cases have your class extend the `EmbeddedKafkaStreams` trait (from the `net.manub.embeddedkafka.schemaregistry.streams` package). This offers both streams management and easy creation of consumers for asserting resulting messages in output/sink topics.
-* Use `EmbeddedKafkaStreams.runStreams` and `EmbeddedKafka.withConsumer` and `EmbeddedKafka.withProducer`. This allows you to create your own consumers of custom types as seen in the [example test](src/test/scala/net/manub/embeddedkafka/schemaregistry/streams/ExampleKafkaStreamsSpec.scala).
+* Use `EmbeddedKafkaStreams.runStreams` and `EmbeddedKafka.withConsumer` and `EmbeddedKafka.withProducer`. This allows you to create your own consumers of custom types as seen in the [example test](kafka-streams/src/test/scala/net/manub/embeddedkafka/schemaregistry/streams/ExampleKafkaStreamsSpec.scala).
