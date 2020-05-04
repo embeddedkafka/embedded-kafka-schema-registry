@@ -16,12 +16,12 @@ trait EmbeddedKafka
   override private[embeddedkafka] def baseConsumerConfig(
       implicit config: EmbeddedKafkaConfig
   ): Map[String, Object] =
-    defaultConsumerConfig ++ configForSchemaRegistry ++ config.customConsumerProperties
+    defaultConsumerConfig ++ config.customConsumerProperties
 
   override private[embeddedkafka] def baseProducerConfig(
       implicit config: EmbeddedKafkaConfig
   ): Map[String, Object] =
-    defaultProducerConf ++ configForSchemaRegistry ++ config.customProducerProperties
+    defaultProducerConf ++ config.customProducerProperties
 
   override private[embeddedkafka] def withRunningServers[T](
       config: EmbeddedKafkaConfig,
@@ -35,21 +35,21 @@ trait EmbeddedKafka
         config.customBrokerProperties,
         kafkaLogsDir
       )
+    val actualKafkaPort = EmbeddedKafka.kafkaPort(broker)
     val restApp = startSchemaRegistry(
       config.schemaRegistryPort,
-      actualZkPort,
-      config.avroCompatibilityLevel
+      actualKafkaPort,
+      config.customSchemaRegistryProperties
     )
-    val actualSchemaRegistryPort = restApp.restServer.getURI.getPort
 
     val configWithUsedPorts = EmbeddedKafkaConfig(
-      EmbeddedKafka.kafkaPort(broker),
+      actualKafkaPort,
       actualZkPort,
-      actualSchemaRegistryPort,
-      config.avroCompatibilityLevel,
+      EmbeddedKafka.schemaRegistryPort(restApp),
       config.customBrokerProperties,
       config.customProducerProperties,
-      config.customConsumerProperties
+      config.customConsumerProperties,
+      config.customSchemaRegistryProperties
     )
 
     try {
@@ -79,10 +79,10 @@ object EmbeddedKafka
       config.kafkaPort,
       zookeeperPort(factory),
       config.schemaRegistryPort,
-      config.avroCompatibilityLevel,
       config.customBrokerProperties,
       config.customProducerProperties,
-      config.customConsumerProperties
+      config.customConsumerProperties,
+      config.customSchemaRegistryProperties
     )
 
     val kafkaBroker = startKafka(configWithUsedZooKeeperPort, kafkaLogsDir)
@@ -90,8 +90,8 @@ object EmbeddedKafka
     val restApp = EmbeddedSR(
       startSchemaRegistry(
         configWithUsedZooKeeperPort.schemaRegistryPort,
-        configWithUsedZooKeeperPort.zooKeeperPort,
-        configWithUsedZooKeeperPort.avroCompatibilityLevel
+        EmbeddedKafka.kafkaPort(kafkaBroker),
+        configWithUsedZooKeeperPort.customSchemaRegistryProperties
       )
     )
 

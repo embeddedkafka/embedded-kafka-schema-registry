@@ -2,7 +2,7 @@ package net.manub.embeddedkafka.schemaregistry
 
 import java.nio.file.Path
 
-import io.confluent.kafka.schemaregistry.RestApp
+import io.confluent.kafka.schemaregistry.rest.SchemaRegistryRestApplication
 import kafka.server.KafkaServer
 import net.manub.embeddedkafka.{
   EmbeddedServer,
@@ -17,7 +17,8 @@ import scala.reflect.io.Directory
   *
   * @param app the Schema Registry app.
   */
-case class EmbeddedSR(app: RestApp) extends EmbeddedServer {
+case class EmbeddedSR(app: SchemaRegistryRestApplication)
+    extends EmbeddedServer {
 
   /**
     * Shuts down the app.

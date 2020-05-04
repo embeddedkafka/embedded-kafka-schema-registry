@@ -81,8 +81,7 @@ lazy val commonSettings = Seq(
 // They tend to evict Apache's since their version is greater
 lazy val confluentArtifacts = Seq(
   "io.confluent" % "kafka-avro-serializer" % confluentVersion,
-  "io.confluent" % "kafka-schema-registry" % confluentVersion,
-  "io.confluent" % "kafka-schema-registry" % confluentVersion classifier "tests"
+  "io.confluent" % "kafka-schema-registry" % confluentVersion
 ).map(_ excludeAll ExclusionRule().withOrganization("org.apache.kafka"))
 
 lazy val commonLibrarySettings = libraryDependencies ++= Seq(

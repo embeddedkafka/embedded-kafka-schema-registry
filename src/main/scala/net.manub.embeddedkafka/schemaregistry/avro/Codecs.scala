@@ -4,6 +4,10 @@ import org.apache.avro.generic.GenericRecord
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.clients.consumer.ConsumerRecord
 
+@deprecated(
+  "Avro-related classes will be removed soon",
+  since = "5.5.0"
+)
 object Codecs {
   implicit def stringKeyAvroValueCrDecoder[V <: SpecificRecord]
       : ConsumerRecord[String, V] => (String, V) =
