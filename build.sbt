@@ -1,5 +1,7 @@
 import sbtrelease.Version
 
+parallelExecution in ThisBuild := false
+
 val embeddedKafkaVersion = "2.5.0"
 val confluentVersion = "5.5.0"
 
@@ -85,14 +87,35 @@ lazy val confluentArtifacts = Seq(
 ).map(_ excludeAll ExclusionRule().withOrganization("org.apache.kafka"))
 
 lazy val commonLibrarySettings = libraryDependencies ++= Seq(
-  "io.github.embeddedkafka" %% "embedded-kafka-streams" % embeddedKafkaVersion,
   "org.slf4j" % "slf4j-log4j12" % "1.7.30" % Test,
   "org.scalatest" %% "scalatest" % "3.1.1" % Test
 ) ++ confluentArtifacts
 
 lazy val root = (project in file("."))
+  .settings(name := "embedded-kafka-schema-registry-root")
+  .settings(commonSettings: _*)
+  .settings(publishArtifact := false)
+  .settings(releaseSettings: _*)
+  .settings(skip in publish := true)
+  .aggregate(embeddedKafkaSchemaRegistry, kafkaStreams)
+
+lazy val embeddedKafkaSchemaRegistry = (project in file("embedded-kafka-schema-registry"))
   .settings(name := "embedded-kafka-schema-registry")
   .settings(publishSettings: _*)
   .settings(commonSettings: _*)
   .settings(commonLibrarySettings)
+  .settings(libraryDependencies ++= Seq(
+    "io.github.embeddedkafka" %% "embedded-kafka" % embeddedKafkaVersion,
+  ))
   .settings(releaseSettings: _*)
+
+lazy val kafkaStreams = (project in file("kafka-streams"))
+  .settings(name := "embedded-kafka-schema-registry-streams")
+  .settings(publishSettings: _*)
+  .settings(commonSettings: _*)
+  .settings(commonLibrarySettings)
+  .settings(releaseSettings: _*)
+  .settings(libraryDependencies ++= Seq(
+    "io.github.embeddedkafka" %% "embedded-kafka-streams" % embeddedKafkaVersion
+  ))
+  .dependsOn(embeddedKafkaSchemaRegistry)
