@@ -88,7 +88,7 @@ lazy val confluentArtifacts = Seq(
 
 lazy val commonLibrarySettings = libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-log4j12" % "1.7.30" % Test,
-  "org.scalatest" %% "scalatest" % "3.1.1" % Test
+  "org.scalatest" %% "scalatest" % "3.1.2" % Test
 ) ++ confluentArtifacts
 
 lazy val root = (project in file("."))
