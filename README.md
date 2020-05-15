@@ -1,6 +1,6 @@
 # embedded-kafka-schema-registry
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.12)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.13)
 ![Build](https://github.com/embeddedkafka/embedded-kafka-schema-registry/workflows/Build/badge.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ea9c18f6d1f547a599d76102cd0e709a)](https://www.codacy.com/gh/embeddedkafka/embedded-kafka-schema-registry)
 [![Codacy Coverage Badge](https://api.codacy.com/project/badge/Coverage/ea9c18f6d1f547a599d76102cd0e709a)](https://www.codacy.com/gh/embeddedkafka/embedded-kafka-schema-registry)
@@ -12,11 +12,9 @@ Relies on the [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka) 
 
 ## Version compatibility matrix
 
-embedded-kafka-schema-registry is available on Maven Central, compiled for Scala 2.12.
+embedded-kafka-schema-registry is available on Maven Central, compiled for Scala 2.12 and 2.13.
 
 Support for Scala 2.11 was dropped by Apache in Kafka v2.5.0.
-
-Currently there's no support for Scala 2.13 as Confluent artifacts are not published for such version.
 
 Versions match the version of Confluent Schema Registry they're built against.
 

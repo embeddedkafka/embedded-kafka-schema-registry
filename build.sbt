@@ -57,8 +57,8 @@ lazy val confluentResolvers = Seq(
 
 lazy val commonSettings = Seq(
   organization := "io.github.embeddedkafka",
-  scalaVersion := "2.12.10",
-  crossScalaVersions := Seq("2.12.10"),
+  scalaVersion := "2.13.1",
+  crossScalaVersions := Seq("2.12.10", "2.13.1"),
   homepage := Some(url("https://github.com/embeddedkafka/embedded-kafka-schema-registry")),
   resolvers ++= confluentResolvers,
   parallelExecution in Test := false,
