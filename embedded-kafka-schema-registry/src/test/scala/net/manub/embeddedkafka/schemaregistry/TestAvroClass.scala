@@ -22,11 +22,11 @@ case class TestAvroClass(var name: String) extends SpecificRecordBase {
       case _ => throw new AvroRuntimeException("Bad index")
     }
 
-  override def getSchema: Schema = TestAvroClass.SCHEMA$
+  override def getSchema: Schema = TestAvroClass.avroSchema
 }
 
 object TestAvroClass {
-  val SCHEMA$ =
+  val avroSchema =
     (new Schema.Parser)
       .parse("""
                 |{"namespace": "net.manub.embeddedkafka.schemaregistry",

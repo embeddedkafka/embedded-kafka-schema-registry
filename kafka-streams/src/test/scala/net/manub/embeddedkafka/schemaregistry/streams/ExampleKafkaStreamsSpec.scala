@@ -14,7 +14,6 @@ import net.manub.embeddedkafka.schemaregistry.{
   TestAvroClass
 }
 import net.manub.embeddedkafka.schemaregistry.streams.EmbeddedKafkaStreams._
-import org.apache.avro.Schema
 import org.apache.avro.generic.{GenericRecord, GenericRecordBuilder}
 import org.apache.kafka.common.serialization._
 import org.apache.kafka.streams.StreamsBuilder
@@ -100,13 +99,18 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
     }
 
     "support kafka streams and generic record" in {
-      val schema: Schema = TestAvroClass.SCHEMA$
       val recordWorld: GenericRecord =
-        new GenericRecordBuilder(schema).set("name", "world").build()
+        new GenericRecordBuilder(TestAvroClass.avroSchema)
+          .set("name", "world")
+          .build()
       val recordBar: GenericRecord =
-        new GenericRecordBuilder(schema).set("name", "bar").build()
+        new GenericRecordBuilder(TestAvroClass.avroSchema)
+          .set("name", "bar")
+          .build()
       val recordYaz: GenericRecord =
-        new GenericRecordBuilder(schema).set("name", "yaz").build()
+        new GenericRecordBuilder(TestAvroClass.avroSchema)
+          .set("name", "yaz")
+          .build()
 
       val streamBuilder = new StreamsBuilder
       val stream: KStream[String, GenericRecord] =
