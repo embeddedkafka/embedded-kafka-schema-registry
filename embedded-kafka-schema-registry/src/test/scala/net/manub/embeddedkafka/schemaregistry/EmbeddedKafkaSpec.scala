@@ -12,8 +12,8 @@ import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaConfig.defaultConfig
 import org.apache.kafka.common.serialization.{Deserializer, Serializer}
 import org.scalatest.BeforeAndAfterAll
 
-import scala.collection.JavaConverters._
 import scala.concurrent.duration._
+import scala.jdk.CollectionConverters._
 
 class EmbeddedKafkaSpec
     extends EmbeddedKafkaSpecSupport

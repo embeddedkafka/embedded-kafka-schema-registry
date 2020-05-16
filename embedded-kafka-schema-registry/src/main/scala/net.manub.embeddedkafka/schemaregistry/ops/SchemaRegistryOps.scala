@@ -12,7 +12,7 @@ import net.manub.embeddedkafka.EmbeddedServer
 import net.manub.embeddedkafka.ops.RunningServersOps
 import net.manub.embeddedkafka.schemaregistry.{EmbeddedKafkaConfig, EmbeddedSR}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 /**
   * Trait for Schema Registry-related actions.

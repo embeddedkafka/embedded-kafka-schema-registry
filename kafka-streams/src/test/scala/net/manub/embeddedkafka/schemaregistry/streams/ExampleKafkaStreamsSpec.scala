@@ -22,7 +22,7 @@ import org.apache.kafka.streams.kstream.{Consumed, KStream, Produced}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
   implicit val config: EmbeddedKafkaConfig =
