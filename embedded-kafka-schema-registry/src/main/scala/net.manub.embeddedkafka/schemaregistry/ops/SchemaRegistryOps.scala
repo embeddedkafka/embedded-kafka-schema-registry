@@ -16,7 +16,7 @@ import scala.jdk.CollectionConverters._
 
 /**
   * Trait for Schema Registry-related actions.
-  * Relies on [[SchemaRegistryRestApplication]].
+  * Relies on `io.confluent.kafka.schemaregistry.rest.SchemaRegistryRestApplication`.
   */
 trait SchemaRegistryOps {
 
@@ -53,10 +53,8 @@ trait SchemaRegistryOps {
 }
 
 /**
-  * [[SchemaRegistryOps]] extension relying on [[RunningServersOps]] for
+  * [[SchemaRegistryOps]] extension relying on `RunningServersOps` for
   * keeping track of running [[EmbeddedSR]] instances.
-  *
-  * @see [[RunningServersOps]]
   */
 trait RunningSchemaRegistryOps {
   this: SchemaRegistryOps with RunningServersOps =>
