@@ -19,6 +19,7 @@ import org.apache.avro.generic.{GenericRecord, GenericRecordBuilder}
 import org.apache.kafka.common.serialization._
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.kstream.{Consumed, KStream, Produced}
+import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -83,7 +84,7 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
         publishToKafka(inTopic, "hello", TestAvroClass("world"))
         publishToKafka(inTopic, "foo", TestAvroClass("bar"))
         publishToKafka(inTopic, "baz", TestAvroClass("yaz"))
-        withConsumer[String, TestAvroClass, Unit] { consumer =>
+        withConsumer[String, TestAvroClass, Assertion] { consumer =>
           val consumedMessages: Stream[(String, TestAvroClass)] =
             consumer.consumeLazily(outTopic)
           consumedMessages.take(2) should be(
@@ -93,7 +94,7 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
             )
           )
           val h :: _ = consumedMessages.drop(2).toList
-          h should be("baz" -> TestAvroClass("yaz"))
+          h shouldBe "baz" -> TestAvroClass("yaz")
         }
       }
     }
@@ -126,14 +127,14 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
         publishToKafka(inTopic, "hello", recordWorld)
         publishToKafka(inTopic, "foo", recordBar)
         publishToKafka(inTopic, "baz", recordYaz)
-        withConsumer[String, GenericRecord, Unit] { consumer =>
+        withConsumer[String, GenericRecord, Assertion] { consumer =>
           val consumedMessages: Stream[(String, GenericRecord)] =
             consumer.consumeLazily[(String, GenericRecord)](outTopic)
           consumedMessages.take(2) should be(
             Seq("hello" -> recordWorld, "foo" -> recordBar)
           )
           val h :: _ = consumedMessages.drop(2).toList
-          h should be("baz" -> recordYaz)
+          h shouldBe "baz" -> recordYaz
         }
       }
     }

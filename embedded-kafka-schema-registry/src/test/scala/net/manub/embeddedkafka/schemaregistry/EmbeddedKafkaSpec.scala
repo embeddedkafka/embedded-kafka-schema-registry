@@ -43,7 +43,7 @@ class EmbeddedKafkaSpec
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    EmbeddedKafka.start()
+    val _ = EmbeddedKafka.start()
   }
 
   override def afterAll(): Unit = {

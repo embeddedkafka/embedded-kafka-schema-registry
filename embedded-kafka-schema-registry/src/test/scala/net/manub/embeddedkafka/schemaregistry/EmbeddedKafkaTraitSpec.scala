@@ -5,6 +5,7 @@ import net.manub.embeddedkafka.schemaregistry.EmbeddedKafkaSpecSupport.{
   Available,
   NotAvailable
 }
+import org.scalatest.Assertion
 
 class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
   "the withRunningKafka method" should {
@@ -45,13 +46,13 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
     }
   }
 
-  private def everyServerIsAvailable(config: EmbeddedKafkaConfig): Unit = {
+  private def everyServerIsAvailable(config: EmbeddedKafkaConfig): Assertion = {
     expectedServerStatus(config.kafkaPort, Available)
     expectedServerStatus(config.schemaRegistryPort, Available)
     expectedServerStatus(config.zooKeeperPort, Available)
   }
 
-  private def noServerIsAvailable(config: EmbeddedKafkaConfig): Unit = {
+  private def noServerIsAvailable(config: EmbeddedKafkaConfig): Assertion = {
     expectedServerStatus(config.kafkaPort, NotAvailable)
     expectedServerStatus(config.schemaRegistryPort, NotAvailable)
     expectedServerStatus(config.zooKeeperPort, NotAvailable)

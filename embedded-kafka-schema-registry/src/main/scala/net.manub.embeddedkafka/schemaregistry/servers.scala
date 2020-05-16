@@ -30,9 +30,9 @@ case class EmbeddedKWithSR(
     factory: Option[EmbeddedZ],
     broker: KafkaServer,
     app: EmbeddedSR,
-    logsDirs: Path
-)(implicit config: EmbeddedKafkaConfig)
-    extends EmbeddedServerWithKafka {
+    logsDirs: Path,
+    config: EmbeddedKafkaConfig
+) extends EmbeddedServerWithKafka {
   override def stop(clearLogs: Boolean): Unit = {
     app.stop()
 
@@ -41,6 +41,8 @@ case class EmbeddedKWithSR(
 
     factory.foreach(_.stop(clearLogs))
 
-    if (clearLogs) Directory(logsDirs.toFile).deleteRecursively
+    if (clearLogs) {
+      val _ = Directory(logsDirs.toFile).deleteRecursively
+    }
   }
 }
