@@ -99,6 +99,8 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
           Files.createTempDirectory("zookeeper-test-logs")
         )
         EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
+        EmbeddedKafka.startSchemaRegistry
+        EmbeddedKafka.stopSchemaRegistry()
         EmbeddedKafka.isRunning shouldBe false
         EmbeddedKafka.stop()
         EmbeddedKafka.isRunning shouldBe false
