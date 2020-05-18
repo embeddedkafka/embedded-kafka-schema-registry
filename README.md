@@ -54,12 +54,6 @@ class MySpec extends AnyWordSpecLike with Matchers with EmbeddedKafka {
 
 * In-memory Zookeeper, Kafka, and Schema Registry will be instantiated respectively on port 6000, 6001, and 6002 and automatically shutdown at the end of the test.
 
-### ~~Utility methods~~
-
-~~.`net.manub.embeddedkafka.schemaregistry.avro.AvroSerdes` provides utility methods for building Avro Serdes.~~
-
-Now that Schema Registry supports more than one serialization format, Avro-related classes will be removed in the near future.
-
 ## embedded-kafka-schema-registry-streams
 
 A library that builds on top of `embedded-kafka-schema-registry` to offer easy testing of [Kafka Streams](https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Streams) with Confluent Schema Registry.

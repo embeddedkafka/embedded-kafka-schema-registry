@@ -23,7 +23,7 @@ object Dependencies {
     // Exclude any transitive Kafka dependency to prevent runtime errors.
     // They tend to evict Apache's since their version is greater
     lazy val confluentDeps: Seq[ModuleID] = Seq(
-      "io.confluent" % "kafka-avro-serializer" % Versions.ConfluentPlatform,
+      "io.confluent" % "kafka-avro-serializer" % Versions.ConfluentPlatform % Test,
       "io.confluent" % "kafka-schema-registry" % Versions.ConfluentPlatform
     ).map(_ excludeAll ExclusionRule().withOrganization("org.apache.kafka"))
 
