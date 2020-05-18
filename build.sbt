@@ -1,13 +1,36 @@
+import Dependencies._
 import sbtrelease.Version
 
-parallelExecution in ThisBuild := false
+ThisBuild / parallelExecution := false
 
-val embeddedKafkaVersion = "2.5.0"
-val confluentVersion = "5.5.0"
+lazy val commonSettings = Seq(
+  organization := "io.github.embeddedkafka",
+  scalaVersion := Versions.Scala,
+  crossScalaVersions := Seq(Versions.Scala212, Versions.Scala)
+)
+
+lazy val compileSettings = Seq(
+  Compile / compile := (Compile / compile)
+    .dependsOn(
+      Compile / scalafmtSbt,
+      Compile / scalafmtAll
+    )
+    .value,
+  libraryDependencies ++= Common.confluentDeps ++ Common.testDeps,
+  resolvers ++= CustomResolvers.resolvers,
+  javaOptions ++= Seq("-Xms512m", "-Xmx2048m"),
+  scalacOptions -= "-Xfatal-warnings"
+)
+
+lazy val coverageSettings = Seq(
+  coverageMinimum := 80,
+  coverageFailOnMinimum := false
+)
 
 lazy val publishSettings = Seq(
   licenses += ("MIT", url("https://opensource.org/licenses/MIT")),
-  publishArtifact in Test := false,
+  homepage := Some(url("https://github.com/embeddedkafka/embedded-kafka-schema-registry")),
+  Test / publishArtifact := false,
   developers := List(
     Developer(
       "manub",
@@ -49,64 +72,42 @@ lazy val releaseSettings = Seq(
   releaseCrossBuild := true
 )
 
-lazy val confluentResolvers = Seq(
-  "confluent" at "https://packages.confluent.io/maven/",
-  // Since v5.5.0
-  "jitpack" at "https://jitpack.io"
+lazy val testSettings = Seq(
+  Test / fork := true,
+  Test / logBuffered := false,
+  Test / parallelExecution := false
 )
-
-lazy val commonSettings = Seq(
-  organization := "io.github.embeddedkafka",
-  scalaVersion := "2.13.1",
-  crossScalaVersions := Seq("2.12.11", "2.13.1"),
-  homepage := Some(url("https://github.com/embeddedkafka/embedded-kafka-schema-registry")),
-  resolvers ++= confluentResolvers,
-  parallelExecution in Test := false,
-  logBuffered in Test := false,
-  fork in Test := true,
-  javaOptions ++= Seq("-Xms512m", "-Xmx2048m"),
-  scalacOptions -= "-Xfatal-warnings",
-  scalafmtOnCompile := true,
-  coverageMinimum := 80
-)
-
-// Exclude any transitive Kafka dependency to prevent runtime errors.
-// They tend to evict Apache's since their version is greater
-lazy val confluentArtifacts = Seq(
-  "io.confluent" % "kafka-avro-serializer" % confluentVersion,
-  "io.confluent" % "kafka-schema-registry" % confluentVersion
-).map(_ excludeAll ExclusionRule().withOrganization("org.apache.kafka"))
-
-lazy val commonLibrarySettings = libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-log4j12" % "1.7.30" % Test,
-  "org.scalatest" %% "scalatest" % "3.1.2" % Test
-) ++ confluentArtifacts
 
 lazy val root = (project in file("."))
   .settings(name := "embedded-kafka-schema-registry-root")
   .settings(commonSettings: _*)
-  .settings(publishArtifact := false)
+  .settings(compileSettings: _*)
+  .settings(coverageSettings: _*)
+  .settings(publishSettings: _*)
   .settings(releaseSettings: _*)
-  .settings(skip in publish := true)
+  .settings(testSettings: _*)
+  .settings(publishArtifact := false)
+  .settings(publish / skip := true)
   .aggregate(embeddedKafkaSchemaRegistry, kafkaStreams)
 
-lazy val embeddedKafkaSchemaRegistry = (project in file("embedded-kafka-schema-registry"))
-  .settings(name := "embedded-kafka-schema-registry")
-  .settings(publishSettings: _*)
-  .settings(commonSettings: _*)
-  .settings(commonLibrarySettings)
-  .settings(libraryDependencies ++= Seq(
-    "io.github.embeddedkafka" %% "embedded-kafka" % embeddedKafkaVersion,
-  ))
-  .settings(releaseSettings: _*)
+lazy val embeddedKafkaSchemaRegistry =
+  (project in file("embedded-kafka-schema-registry"))
+    .settings(name := "embedded-kafka-schema-registry")
+    .settings(commonSettings: _*)
+    .settings(compileSettings: _*)
+    .settings(coverageSettings: _*)
+    .settings(publishSettings: _*)
+    .settings(releaseSettings: _*)
+    .settings(testSettings: _*)
+    .settings(libraryDependencies ++= EmbeddedKafkaSchemaRegistry.prodDeps)
 
 lazy val kafkaStreams = (project in file("kafka-streams"))
   .settings(name := "embedded-kafka-schema-registry-streams")
-  .settings(publishSettings: _*)
   .settings(commonSettings: _*)
-  .settings(commonLibrarySettings)
+  .settings(compileSettings: _*)
+  .settings(coverageSettings: _*)
+  .settings(publishSettings: _*)
   .settings(releaseSettings: _*)
-  .settings(libraryDependencies ++= Seq(
-    "io.github.embeddedkafka" %% "embedded-kafka-streams" % embeddedKafkaVersion
-  ))
+  .settings(testSettings: _*)
+  .settings(libraryDependencies ++= KafkaStreams.prodDeps)
   .dependsOn(embeddedKafkaSchemaRegistry)
