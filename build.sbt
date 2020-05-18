@@ -58,23 +58,14 @@ lazy val confluentResolvers = Seq(
 lazy val commonSettings = Seq(
   organization := "io.github.embeddedkafka",
   scalaVersion := "2.13.1",
-  crossScalaVersions := Seq("2.12.10", "2.13.1"),
+  crossScalaVersions := Seq("2.12.11", "2.13.1"),
   homepage := Some(url("https://github.com/embeddedkafka/embedded-kafka-schema-registry")),
   resolvers ++= confluentResolvers,
   parallelExecution in Test := false,
   logBuffered in Test := false,
   fork in Test := true,
   javaOptions ++= Seq("-Xms512m", "-Xmx2048m"),
-  scalacOptions ++= Seq(
-    "-deprecation",
-    "-encoding",
-    "utf8",
-    "-Xlint:missing-interpolator",
-    "-Xlint:private-shadow",
-    "-Xlint:type-parameter-shadow",
-    "-Ywarn-dead-code",
-    "-Ywarn-unused"
-  ),
+  scalacOptions -= "-Xfatal-warnings",
   scalafmtOnCompile := true,
   coverageMinimum := 80
 )

@@ -11,7 +11,7 @@ import org.apache.avro.generic.GenericRecord
 import org.apache.avro.specific.SpecificRecord
 import org.apache.kafka.common.serialization.{Serde, Serdes}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 @deprecated(
   "Avro-related classes will be removed soon",

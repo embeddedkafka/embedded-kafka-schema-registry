@@ -87,19 +87,26 @@ object EmbeddedKafka
 
     val kafkaBroker = startKafka(configWithUsedZooKeeperPort, kafkaLogsDir)
 
+    val actualKafkaPort = EmbeddedKafka.kafkaPort(kafkaBroker)
     val restApp = EmbeddedSR(
       startSchemaRegistry(
         configWithUsedZooKeeperPort.schemaRegistryPort,
-        EmbeddedKafka.kafkaPort(kafkaBroker),
+        actualKafkaPort,
         configWithUsedZooKeeperPort.customSchemaRegistryProperties
       )
+    )
+
+    val configWithUsedPorts = configWithUsedZooKeeperPort.copy(
+      kafkaPort = actualKafkaPort,
+      schemaRegistryPort = EmbeddedKafka.schemaRegistryPort(restApp.app)
     )
 
     val server = EmbeddedKWithSR(
       factory = Option(factory),
       broker = kafkaBroker,
       app = restApp,
-      logsDirs = kafkaLogsDir
+      logsDirs = kafkaLogsDir,
+      configWithUsedPorts
     )
 
     runningServers.add(server)
