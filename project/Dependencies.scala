@@ -28,8 +28,9 @@ object Dependencies {
     ).map(_ excludeAll ExclusionRule().withOrganization("org.apache.kafka"))
 
     lazy val testDeps: Seq[ModuleID] = Seq(
-      "org.slf4j"      % "slf4j-log4j12" % Versions.Slf4j,
-      "org.scalatest" %% "scalatest"     % Versions.ScalaTest
+      "org.slf4j"      % "slf4j-log4j12"            % Versions.Slf4j,
+      "org.scalatest" %% "scalatest-wordspec"       % Versions.ScalaTest,
+      "org.scalatest" %% "scalatest-shouldmatchers" % Versions.ScalaTest
     ).map(_ % Test)
   }
 
