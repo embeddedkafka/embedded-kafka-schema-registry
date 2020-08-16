@@ -75,30 +75,31 @@ object EmbeddedKafka
     val factory =
       EmbeddedZ(startZooKeeper(config.zooKeeperPort, zkLogsDir), zkLogsDir)
 
-    val configWithUsedZooKeeperPort = EmbeddedKafkaConfigImpl(
-      config.kafkaPort,
-      zookeeperPort(factory),
-      config.schemaRegistryPort,
-      config.customBrokerProperties,
-      config.customProducerProperties,
-      config.customConsumerProperties,
-      config.customSchemaRegistryProperties
+    val actualZookeeperPort = zookeeperPort(factory)
+    val kafkaBroker = startKafka(
+      kafkaPort = config.kafkaPort,
+      zooKeeperPort = actualZookeeperPort,
+      customBrokerProperties = config.customBrokerProperties,
+      kafkaLogDir = kafkaLogsDir
     )
-
-    val kafkaBroker = startKafka(configWithUsedZooKeeperPort, kafkaLogsDir)
 
     val actualKafkaPort = EmbeddedKafka.kafkaPort(kafkaBroker)
     val restApp = EmbeddedSR(
       startSchemaRegistry(
-        configWithUsedZooKeeperPort.schemaRegistryPort,
+        config.schemaRegistryPort,
         actualKafkaPort,
-        configWithUsedZooKeeperPort.customSchemaRegistryProperties
+        config.customSchemaRegistryProperties
       )
     )
 
-    val configWithUsedPorts = configWithUsedZooKeeperPort.copy(
+    val configWithUsedPorts = EmbeddedKafkaConfigImpl(
       kafkaPort = actualKafkaPort,
-      schemaRegistryPort = EmbeddedKafka.schemaRegistryPort(restApp.app)
+      zooKeeperPort = actualZookeeperPort,
+      schemaRegistryPort = EmbeddedKafka.schemaRegistryPort(restApp.app),
+      customBrokerProperties = config.customBrokerProperties,
+      customProducerProperties = config.customProducerProperties,
+      customConsumerProperties = config.customConsumerProperties,
+      customSchemaRegistryProperties = config.customSchemaRegistryProperties
     )
 
     val server = EmbeddedKWithSR(
