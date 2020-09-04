@@ -42,7 +42,7 @@ case class EmbeddedKWithSR(
     factory.foreach(_.stop(clearLogs))
 
     if (clearLogs) {
-      val _ = Directory(logsDirs.toFile).deleteRecursively
+      val _ = Directory(logsDirs.toFile).deleteRecursively()
     }
   }
 }
