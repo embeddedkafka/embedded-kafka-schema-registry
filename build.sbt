@@ -17,7 +17,7 @@ lazy val compileSettings = Seq(
 
 lazy val coverageSettings = Seq(
   coverageMinimum := 80,
-  coverageFailOnMinimum := false
+  coverageFailOnMinimum := true
 )
 
 lazy val publishSettings = Seq(
