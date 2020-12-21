@@ -18,6 +18,12 @@ Support for Scala 2.11 was dropped by Apache in Kafka v2.5.0.
 
 Versions match the version of Confluent Schema Registry they're built against.
 
+## Important known limitation
+
+As Kafka core inlines the Scala library, you cannot use a different Scala **patch** version than [what Kafka used to compile its jars](https://github.com/apache/kafka/blob/trunk/gradle/dependencies.gradle#L30)!
+
+Make sure to check the versions used by the corresponding release on Apache's repository.
+
 ## embedded-kafka-schema-registry
 
 ### How to use
