@@ -25,6 +25,12 @@ As Kafka core inlines the Scala library, you cannot use a different Scala **patc
 
 Make sure to check the versions used by the corresponding release on Apache's repository.
 
+## Breaking change: new package name
+
+From v6.2.0 onwards package name has been updated to reflect the library group id (i.e. `io.github.embeddedkafka`).
+
+Aliases to the old package name have been added, along with a one-time [Scalafix rule](https://github.com/embeddedkafka/embedded-kafka-scalafix) to ensure the smoothest migration.
+
 ## embedded-kafka-schema-registry
 
 ### How to use
@@ -39,7 +45,7 @@ resolvers ++= Seq(
 ```
 
 * In your `build.sbt` file add the following dependency (replace `x.x.x` with the appropriate version): `"io.github.embeddedkafka" %% "embedded-kafka-schema-registry" % "x.x.x" % Test`
-* Have your class extend the `EmbeddedKafka` trait (from the `net.manub.embeddedkafka.schemaregistry` package).
+* Have your class extend the `EmbeddedKafka` trait (from the `io.github.embeddedkafka.schemaregistry` package).
 * Enclose the code that needs a running instance of Kafka within the `withRunningKafka` closure.
 * Provide an implicit `EmbeddedKafkaConfigImpl` (from the same package mentioned before).
 
@@ -70,5 +76,5 @@ It takes care of instantiating and starting your streams as well as closing them
 ### How to use
 
 * In your `build.sbt` file add the following dependency (replace `x.x.x` with the appropriate version): `"io.github.embeddedkafka" %% "embedded-kafka-schema-registry-streams" % "x.x.x" % Test`
-* For most of the cases have your class extend the `EmbeddedKafkaStreams` trait (from the `net.manub.embeddedkafka.schemaregistry.streams` package). This offers both streams management and easy creation of consumers for asserting resulting messages in output/sink topics.
-* Use `EmbeddedKafkaStreams.runStreams` and `EmbeddedKafka.withConsumer` and `EmbeddedKafka.withProducer`. This allows you to create your own consumers of custom types as seen in the [example test](kafka-streams/src/test/scala/net/manub/embeddedkafka/schemaregistry/streams/ExampleKafkaStreamsSpec.scala).
+* For most of the cases have your class extend the `EmbeddedKafkaStreams` trait (from the `io.github.embeddedkafka.schemaregistry.streams` package). This offers both streams management and easy creation of consumers for asserting resulting messages in output/sink topics.
+* Use `EmbeddedKafkaStreams.runStreams` and `EmbeddedKafka.withConsumer` and `EmbeddedKafka.withProducer`. This allows you to create your own consumers of custom types as seen in the [example test](kafka-streams/src/test/scala/io/github/embeddedkafka/schemaregistry/streams/ExampleKafkaStreamsSpec.scala).
