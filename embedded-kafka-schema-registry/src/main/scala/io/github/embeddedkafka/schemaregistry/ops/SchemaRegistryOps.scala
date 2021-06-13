@@ -35,20 +35,22 @@ trait SchemaRegistryOps {
     val actualSchemaRegistryPort =
       if (schemaRegistryPort == 0) findAvailablePort else schemaRegistryPort
 
-    val props = new Properties
-    props.putAll(customProperties.asJava)
-    props.put(
-      RestConfig.LISTENERS_CONFIG,
-      s"http://localhost:$actualSchemaRegistryPort"
-    )
-    props.put(
-      SchemaRegistryConfig.KAFKASTORE_BOOTSTRAP_SERVERS_CONFIG,
-      s"localhost:$kafkaPort"
+    val restAppProperties = customProperties ++ Map(
+      RestConfig.LISTENERS_CONFIG                              -> s"http://localhost:$actualSchemaRegistryPort",
+      SchemaRegistryConfig.KAFKASTORE_BOOTSTRAP_SERVERS_CONFIG -> s"localhost:$kafkaPort"
     )
 
-    val restApp = new SchemaRegistryRestApplication(props)
+    val restApp = new SchemaRegistryRestApplication(
+      new SchemaRegistryConfig(map2Properties(restAppProperties))
+    )
     restApp.start()
     restApp
+  }
+
+  private[this] def map2Properties(map: Map[String, AnyRef]): Properties = {
+    val props = new Properties
+    props.putAll(map.asJava)
+    props
   }
 }
 
