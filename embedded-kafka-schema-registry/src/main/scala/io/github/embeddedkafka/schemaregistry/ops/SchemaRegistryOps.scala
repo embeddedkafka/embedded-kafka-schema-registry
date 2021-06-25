@@ -12,8 +12,6 @@ import io.github.embeddedkafka.EmbeddedServer
 import io.github.embeddedkafka.ops.RunningServersOps
 import io.github.embeddedkafka.schemaregistry.{EmbeddedKafkaConfig, EmbeddedSR}
 
-import scala.jdk.CollectionConverters._
-
 /**
   * Trait for Schema Registry-related actions.
   * Relies on `io.confluent.kafka.schemaregistry.rest.SchemaRegistryRestApplication`.
@@ -49,7 +47,11 @@ trait SchemaRegistryOps {
 
   private[this] def map2Properties(map: Map[String, AnyRef]): Properties = {
     val props = new Properties
-    props.putAll(map.asJava)
+
+    map.foreach {
+      case (k, v) => props.put(k, v)
+    }
+
     props
   }
 }
