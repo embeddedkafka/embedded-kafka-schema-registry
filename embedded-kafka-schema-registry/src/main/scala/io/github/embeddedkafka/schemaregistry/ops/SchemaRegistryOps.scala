@@ -13,8 +13,8 @@ import io.github.embeddedkafka.ops.RunningServersOps
 import io.github.embeddedkafka.schemaregistry.{EmbeddedKafkaConfig, EmbeddedSR}
 
 /**
-  * Trait for Schema Registry-related actions.
-  * Relies on `io.confluent.kafka.schemaregistry.rest.SchemaRegistryRestApplication`.
+  * Trait for Schema Registry-related actions. Relies on
+  * `io.confluent.kafka.schemaregistry.rest.SchemaRegistryRestApplication`.
   */
 trait SchemaRegistryOps {
 
@@ -34,7 +34,7 @@ trait SchemaRegistryOps {
       if (schemaRegistryPort == 0) findAvailablePort else schemaRegistryPort
 
     val restAppProperties = Map(
-      RestConfig.LISTENERS_CONFIG                              -> s"http://localhost:$actualSchemaRegistryPort",
+      RestConfig.LISTENERS_CONFIG -> s"http://localhost:$actualSchemaRegistryPort",
       SchemaRegistryConfig.KAFKASTORE_BOOTSTRAP_SERVERS_CONFIG -> s"localhost:$kafkaPort"
     ) ++ customProperties
 
@@ -57,8 +57,8 @@ trait SchemaRegistryOps {
 }
 
 /**
-  * [[SchemaRegistryOps]] extension relying on `RunningServersOps` for
-  * keeping track of running [[EmbeddedSR]] instances.
+  * [[SchemaRegistryOps]] extension relying on `RunningServersOps` for keeping
+  * track of running [[EmbeddedSR]] instances.
   */
 trait RunningSchemaRegistryOps {
   this: SchemaRegistryOps with RunningServersOps =>
