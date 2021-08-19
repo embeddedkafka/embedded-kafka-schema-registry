@@ -33,7 +33,7 @@ class EmbeddedKafkaSpec
   implicit val deserializer: Deserializer[TestAvroClass] = {
     val props = Map(
       AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${defaultConfig.schemaRegistryPort}",
-      KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG   -> true.toString
+      KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG -> true.toString
     )
 
     val ser = new KafkaAvroDeserializer

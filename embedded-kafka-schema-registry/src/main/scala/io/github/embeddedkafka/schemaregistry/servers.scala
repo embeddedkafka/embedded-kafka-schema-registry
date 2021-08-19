@@ -15,7 +15,8 @@ import scala.reflect.io.Directory
 /**
   * An instance of an embedded Schema Registry app.
   *
-  * @param app the Schema Registry app.
+  * @param app
+  *   the Schema Registry app.
   */
 case class EmbeddedSR(app: SchemaRegistryRestApplication)
     extends EmbeddedServer {

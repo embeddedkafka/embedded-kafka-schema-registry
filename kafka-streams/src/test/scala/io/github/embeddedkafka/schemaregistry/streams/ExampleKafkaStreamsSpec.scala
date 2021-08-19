@@ -50,7 +50,7 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
   val specificAvroSerde: Serde[TestAvroClass] = {
     val props = Map(
       AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${config.schemaRegistryPort}",
-      KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG   -> true.toString
+      KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG -> true.toString
     )
 
     avroSerde(props)
