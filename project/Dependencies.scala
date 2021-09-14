@@ -12,7 +12,7 @@ object Dependencies {
 
   object Versions {
     val Scala             = "2.13.6"
-    val Scala212          = "2.12.14"
+    val Scala212          = "2.12.15"
     val EmbeddedKafka     = "2.8.0"
     val ConfluentPlatform = "6.2.0"
     val Slf4j             = "1.7.32"
