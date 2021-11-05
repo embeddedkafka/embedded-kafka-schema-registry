@@ -7,8 +7,6 @@ import io.confluent.kafka.serializers.{
   KafkaAvroSerializer
 }
 import io.github.embeddedkafka.Codecs._
-import io.github.embeddedkafka.ConsumerExtensions._
-import io.github.embeddedkafka.schemaregistry.Codecs._
 import io.github.embeddedkafka.schemaregistry.{
   EmbeddedKafkaConfig,
   TestAvroClass
@@ -19,12 +17,17 @@ import org.apache.kafka.common.serialization._
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.kstream.{Consumed, KStream, Produced}
 import org.scalatest.Assertion
+import org.scalatest.concurrent.Eventually
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
+import scala.concurrent.duration._
 import scala.jdk.CollectionConverters._
 
-class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
+class ExampleKafkaStreamsSpec
+    extends AnyWordSpec
+    with Matchers
+    with Eventually {
   implicit val config: EmbeddedKafkaConfig =
     EmbeddedKafkaConfig(
       kafkaPort = 7000,
@@ -83,18 +86,18 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
         publishToKafka(inTopic, "hello", TestAvroClass("world"))
         publishToKafka(inTopic, "foo", TestAvroClass("bar"))
         publishToKafka(inTopic, "baz", TestAvroClass("yaz"))
-        withConsumer[String, TestAvroClass, Assertion] { consumer =>
-          val consumedMessages =
-            consumer.consumeLazily[(String, TestAvroClass)](outTopic)
-          consumedMessages.take(2).toList should be(
-            Seq(
-              "hello" -> TestAvroClass("world"),
-              "foo"   -> TestAvroClass("bar")
-            )
-          )
-          val h :: _ = consumedMessages.drop(2).toList
-          h shouldBe "baz" -> TestAvroClass("yaz")
-        }
+
+        val firstTwoMessages =
+          consumeNumberKeyedMessagesFrom[String, TestAvroClass](outTopic, 2)
+
+        firstTwoMessages should be(
+          Seq("hello" -> TestAvroClass("world"), "foo" -> TestAvroClass("bar"))
+        )
+
+        val thirdMessage =
+          consumeFirstKeyedMessageFrom[String, TestAvroClass](outTopic)
+
+        thirdMessage should be("baz" -> TestAvroClass("yaz"))
       }
     }
 
@@ -131,19 +134,31 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
         publishToKafka(inTopic, "hello", recordWorld)
         publishToKafka(inTopic, "foo", recordBar)
         publishToKafka(inTopic, "baz", recordYaz)
-        withConsumer[String, GenericRecord, Assertion] { consumer =>
-          val consumedMessages =
-            consumer.consumeLazily[(String, GenericRecord)](outTopic)
-          consumedMessages.take(2).toList should be(
-            Seq("hello" -> recordWorld, "foo" -> recordBar)
-          )
-          val h :: _ = consumedMessages.drop(2).toList
-          h shouldBe "baz" -> recordYaz
-        }
+
+        val firstTwoMessages =
+          consumeNumberKeyedMessagesFrom[String, GenericRecord](outTopic, 2)
+
+        firstTwoMessages should be(
+          Seq("hello" -> recordWorld, "foo" -> recordBar)
+        )
+
+        val thirdMessage =
+          consumeFirstKeyedMessageFrom[String, GenericRecord](outTopic)
+
+        thirdMessage should be("baz" -> recordYaz)
       }
     }
 
     "allow support creating custom consumers" in {
+      implicit val patienceConfig: PatienceConfig =
+        PatienceConfig(5.seconds, 100.millis)
+
+      implicit val avroSerializer: Serializer[TestAvroClass] =
+        specificAvroSerde.serializer
+
+      implicit val avroDeserializer: Deserializer[TestAvroClass] =
+        specificAvroSerde.deserializer
+
       val streamBuilder = new StreamsBuilder
       val stream: KStream[String, TestAvroClass] =
         streamBuilder.stream(
@@ -154,23 +169,26 @@ class ExampleKafkaStreamsSpec extends AnyWordSpec with Matchers {
       stream.to(outTopic, Produced.`with`(stringSerde, specificAvroSerde))
 
       runStreams(Seq(inTopic, outTopic), streamBuilder.build()) {
-        implicit val avroSerializer: Serializer[TestAvroClass] =
-          specificAvroSerde.serializer
-
-        implicit val avroDeserializer: Deserializer[TestAvroClass] =
-          specificAvroSerde.deserializer
-
         publishToKafka(inTopic, "hello", TestAvroClass("world"))
         publishToKafka(inTopic, "foo", TestAvroClass("bar"))
 
-        val records =
-          withConsumer[String, TestAvroClass, Seq[(String, TestAvroClass)]](
-            _.consumeLazily[(String, TestAvroClass)](outTopic).take(2)
-          )
+        withConsumer[String, TestAvroClass, Assertion] { consumer =>
+          consumer.subscribe(java.util.Collections.singleton(outTopic))
 
-        records should be(
-          Seq("hello" -> TestAvroClass("world"), "foo" -> TestAvroClass("bar"))
-        )
+          eventually {
+            val records = consumer
+              .poll(java.time.Duration.ofMillis(100.millis.toMillis))
+              .asScala
+              .map(r => (r.key, r.value))
+
+            records should be(
+              Seq(
+                "hello" -> TestAvroClass("world"),
+                "foo"   -> TestAvroClass("bar")
+              )
+            )
+          }
+        }
       }
     }
   }
