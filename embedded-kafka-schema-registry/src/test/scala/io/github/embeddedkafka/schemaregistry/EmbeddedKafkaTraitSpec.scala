@@ -17,7 +17,7 @@ import org.scalatest.Assertion
 import scala.jdk.CollectionConverters._
 
 class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
-  "the withRunningKafka method" ignore {
+  "the withRunningKafka method" should {
     "start a Schema Registry server on a specified port" in {
       implicit val config: EmbeddedKafkaConfig =
         EmbeddedKafkaConfig(schemaRegistryPort = 12345)
@@ -29,7 +29,7 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
   }
 
   "the withRunningKafkaOnFoundPort method" should {
-    "start a Schema Registry server on an available port if 0" ignore {
+    "start a Schema Registry server on an available port if 0" in {
       val userDefinedConfig: EmbeddedKafkaConfig =
         EmbeddedKafkaConfig(schemaRegistryPort = 0)
       withRunningKafkaOnFoundPort(userDefinedConfig) { actualConfig =>
@@ -37,7 +37,7 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
       }
     }
 
-    "start and stop Kafka, Zookeeper, and Schema Registry successfully on non-zero ports" ignore {
+    "start and stop Kafka, Zookeeper, and Schema Registry successfully on non-zero ports" in {
       val userDefinedConfig =
         EmbeddedKafkaConfig(
           kafkaPort = 12345,
