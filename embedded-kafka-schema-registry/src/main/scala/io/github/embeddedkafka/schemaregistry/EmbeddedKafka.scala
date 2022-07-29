@@ -39,7 +39,8 @@ trait EmbeddedKafka
     val restApp = startSchemaRegistry(
       config.schemaRegistryPort,
       actualKafkaPort,
-      config.customSchemaRegistryProperties
+      config.customSchemaRegistryProperties,
+      config.schemaRegistryRestAuth
     )
 
     val configWithUsedPorts = EmbeddedKafkaConfig(
@@ -88,7 +89,8 @@ object EmbeddedKafka
       startSchemaRegistry(
         config.schemaRegistryPort,
         actualKafkaPort,
-        config.customSchemaRegistryProperties
+        config.customSchemaRegistryProperties,
+        config.schemaRegistryRestAuth
       )
     )
 
@@ -99,7 +101,8 @@ object EmbeddedKafka
       customBrokerProperties = config.customBrokerProperties,
       customProducerProperties = config.customProducerProperties,
       customConsumerProperties = config.customConsumerProperties,
-      customSchemaRegistryProperties = config.customSchemaRegistryProperties
+      customSchemaRegistryProperties = config.customSchemaRegistryProperties,
+      schemaRegistryRestAuth = config.schemaRegistryRestAuth
     )
 
     val server = EmbeddedKWithSR(

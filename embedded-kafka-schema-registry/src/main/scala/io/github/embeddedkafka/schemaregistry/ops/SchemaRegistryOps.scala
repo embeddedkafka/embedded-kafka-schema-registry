@@ -2,7 +2,6 @@ package io.github.embeddedkafka.schemaregistry.ops
 
 import java.net.{ServerSocket, URI}
 import java.util.Properties
-
 import io.confluent.kafka.schemaregistry.rest.{
   SchemaRegistryConfig,
   SchemaRegistryRestApplication
@@ -10,6 +9,8 @@ import io.confluent.kafka.schemaregistry.rest.{
 import io.confluent.rest.RestConfig
 import io.github.embeddedkafka.EmbeddedServer
 import io.github.embeddedkafka.ops.RunningServersOps
+import io.github.embeddedkafka.schemaregistry.EmbeddedKafkaConfig.SchemaRegistryRestAuth
+import io.github.embeddedkafka.schemaregistry.application.CustomSchemaRegistryRestApplication
 import io.github.embeddedkafka.schemaregistry.{EmbeddedKafkaConfig, EmbeddedSR}
 
 /**
@@ -21,7 +22,8 @@ trait SchemaRegistryOps {
   private[embeddedkafka] def startSchemaRegistry(
       schemaRegistryPort: Int,
       kafkaPort: Int,
-      customProperties: Map[String, String]
+      customProperties: Map[String, String],
+      restAuth: SchemaRegistryRestAuth
   ): SchemaRegistryRestApplication = {
     def findAvailablePort: Int = {
       val server = new ServerSocket(0)
@@ -38,8 +40,9 @@ trait SchemaRegistryOps {
       SchemaRegistryConfig.KAFKASTORE_BOOTSTRAP_SERVERS_CONFIG -> s"localhost:$kafkaPort"
     ) ++ customProperties
 
-    val restApp = new SchemaRegistryRestApplication(
-      new SchemaRegistryConfig(map2Properties(restAppProperties))
+    val restApp = new CustomSchemaRegistryRestApplication(
+      restAuth = restAuth,
+      config = new SchemaRegistryConfig(map2Properties(restAppProperties))
     )
     restApp.start()
     restApp
@@ -68,7 +71,8 @@ trait RunningSchemaRegistryOps {
       startSchemaRegistry(
         config.schemaRegistryPort,
         config.kafkaPort,
-        config.customSchemaRegistryProperties
+        config.customSchemaRegistryProperties,
+        config.schemaRegistryRestAuth
       )
     )
     runningServers.add(restApp)
