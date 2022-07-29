@@ -25,7 +25,7 @@ trait EmbeddedKafkaSpecSupport
     with IntegrationPatience {
 
   implicit val config: PatienceConfig =
-    PatienceConfig(Span(2, Seconds), Span(100, Milliseconds))
+    PatienceConfig(Span(1, Seconds), Span(100, Milliseconds))
 
   def expectedServerStatus(port: Int, expectedStatus: ServerStatus): Assertion =
     eventually {

@@ -13,10 +13,10 @@ import javax.servlet.ServletRequest
   * A simple LoginService that lookups user credentials from
   * [[SchemaRegistryRestAuth]] credentials.
   */
-private[application] class CustomLoginService(auth: SchemaRegistryRestAuth.Some)
-    extends LoginService {
-
-  protected var identityService: IdentityService = _
+private[application] class CustomLoginService(
+    auth: SchemaRegistryRestAuth.Some,
+    var identityService: IdentityService = null
+) extends LoginService {
 
   override def getName: String = "Custom"
 

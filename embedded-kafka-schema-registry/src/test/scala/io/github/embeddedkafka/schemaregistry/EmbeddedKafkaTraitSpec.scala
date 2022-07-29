@@ -82,7 +82,7 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
         )
 
         val caught = intercept[RestClientException](
-          unauthorizedClient.getCompatibility(null)
+          unauthorizedClient.getAllSubjects
         )
         caught.getStatus shouldBe 401
 
@@ -95,7 +95,7 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
           ).asJava
         )
 
-        client.getCompatibility(null) shouldBe "BACKWARD"
+        client.getAllSubjects.asScala shouldBe empty
       }
     }
 
@@ -126,7 +126,7 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
         )
 
         val caught = intercept[RestClientException](
-          unauthorizedClient.getCompatibility(null)
+          unauthorizedClient.getAllSubjects
         )
         caught.getStatus shouldBe 401
 
@@ -139,7 +139,7 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
           ).asJava
         )
 
-        client.getCompatibility(null) shouldBe "BACKWARD"
+        client.getAllSubjects.asScala shouldBe empty
       }
     }
   }
