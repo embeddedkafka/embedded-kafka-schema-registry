@@ -10,11 +10,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-java@v2
+    - uses: actions/setup-java@v3
       with:
         distribution: adopt
         java-version: 8
-        cache: sbt
+        cache: 'sbt'
     - name: Check formatting
       run: sbt scalafmtCheckAll
     - name: Compile
