@@ -10,7 +10,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: olafurpg/setup-scala@v13
+    - uses: olafurpg/setup-scala@v14
     - name: Compile
       run: sbt compile
     - name: Run cross-version tests with coverage

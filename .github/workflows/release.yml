@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: olafurpg/setup-scala@v13
+    - uses: olafurpg/setup-scala@v14
     - uses: olafurpg/setup-gpg@v3
     - name: Publish artifacts
       run: sbt ci-release || sbt sonatypeReleaseAll
