@@ -7,7 +7,12 @@ import io.github.embeddedkafka.schemaregistry.ops.{
   RunningSchemaRegistryOps,
   SchemaRegistryOps
 }
-import io.github.embeddedkafka.{EmbeddedKafkaSupport, EmbeddedServer, EmbeddedZ}
+import io.github.embeddedkafka.{
+  EmbeddedKafkaSupport,
+  EmbeddedServer,
+  EmbeddedZ,
+  ServerOps
+}
 
 trait EmbeddedKafka
     extends EmbeddedKafkaSupport[EmbeddedKafkaConfig]
