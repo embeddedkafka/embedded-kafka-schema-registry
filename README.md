@@ -13,7 +13,7 @@ Relies on the [embedded-kafka](https://github.com/embeddedkafka/embedded-kafka) 
 
 ## Version compatibility matrix
 
-embedded-kafka-schema-registry is available on Maven Central, compiled for Scala 2.12 and 2.13.
+embedded-kafka-schema-registry is available on Maven Central, compiled for Scala 2.12, 2.13 and Scala 3 (since v7.4.0).
 
 Support for Scala 2.11 was dropped by Apache in Kafka v2.5.0.
 
