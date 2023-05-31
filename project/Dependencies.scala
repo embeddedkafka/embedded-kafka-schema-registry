@@ -11,7 +11,7 @@ object Dependencies {
   }
 
   object Versions {
-    val Scala3            = "3.2.2"
+    val Scala3            = "3.3.0"
     val Scala213          = "2.13.10"
     val Scala212          = "2.12.17"
     val EmbeddedKafka     = "3.4.0.1"
