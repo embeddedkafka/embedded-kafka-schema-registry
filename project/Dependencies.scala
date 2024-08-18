@@ -12,12 +12,12 @@ object Dependencies {
 
   object Versions {
     val Scala3            = "3.3.3"
-    val Scala213          = "2.13.13"
+    val Scala213          = "2.13.14"
     val Scala212          = "2.12.19"
-    val EmbeddedKafka     = "3.6.1"
-    val ConfluentPlatform = "7.6.0"
+    val EmbeddedKafka     = "3.7.0"
+    val ConfluentPlatform = "7.7.0"
     val Slf4j             = "1.7.36"
-    val ScalaTest         = "3.2.18"
+    val ScalaTest         = "3.2.19"
   }
 
   object Common {
