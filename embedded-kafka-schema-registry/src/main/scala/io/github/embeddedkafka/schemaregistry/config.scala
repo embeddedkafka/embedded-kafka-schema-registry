@@ -11,7 +11,7 @@ trait EmbeddedKafkaConfig extends OriginalEmbeddedKafkaConfig {
 
 case class EmbeddedKafkaConfigImpl(
     kafkaPort: Int,
-    zooKeeperPort: Int,
+    controllerPort: Int,
     schemaRegistryPort: Int,
     customBrokerProperties: Map[String, String],
     customProducerProperties: Map[String, String],
@@ -22,13 +22,13 @@ case class EmbeddedKafkaConfigImpl(
 }
 
 object EmbeddedKafkaConfig {
-  lazy val defaultSchemaRegistryPort = 6002
+  lazy val defaultSchemaRegistryPort = 6003
 
   implicit val defaultConfig: EmbeddedKafkaConfig = apply()
 
   def apply(
       kafkaPort: Int = OriginalEmbeddedKafkaConfig.defaultKafkaPort,
-      zooKeeperPort: Int = OriginalEmbeddedKafkaConfig.defaultZookeeperPort,
+      controllerPort: Int = OriginalEmbeddedKafkaConfig.defaultControllerPort,
       schemaRegistryPort: Int = defaultSchemaRegistryPort,
       customBrokerProperties: Map[String, String] = Map.empty,
       customProducerProperties: Map[String, String] = Map.empty,
@@ -37,7 +37,7 @@ object EmbeddedKafkaConfig {
   ): EmbeddedKafkaConfig =
     EmbeddedKafkaConfigImpl(
       kafkaPort,
-      zooKeeperPort,
+      controllerPort,
       schemaRegistryPort,
       customBrokerProperties,
       customProducerProperties,

@@ -31,7 +31,7 @@ class ExampleKafkaStreamsSpec
   implicit val config: EmbeddedKafkaConfig =
     EmbeddedKafkaConfig(
       kafkaPort = 7000,
-      zooKeeperPort = 7001,
+      controllerPort = 7001,
       schemaRegistryPort = 7002
     )
 
