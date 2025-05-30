@@ -28,11 +28,11 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
       }
     }
 
-    "start and stop Kafka, Zookeeper, and Schema Registry successfully on non-zero ports" in {
+    "start and stop Kafka Broker, Kafka Controller, and Schema Registry successfully on non-zero ports" in {
       val userDefinedConfig =
         EmbeddedKafkaConfig(
           kafkaPort = 12345,
-          zooKeeperPort = 12346,
+          controllerPort = 12346,
           schemaRegistryPort = 12347
         )
 
@@ -49,12 +49,12 @@ class EmbeddedKafkaTraitSpec extends EmbeddedKafkaSpecSupport {
   private def everyServerIsAvailable(config: EmbeddedKafkaConfig): Assertion = {
     expectedServerStatus(config.kafkaPort, Available)
     expectedServerStatus(config.schemaRegistryPort, Available)
-    expectedServerStatus(config.zooKeeperPort, Available)
+    expectedServerStatus(config.controllerPort, Available)
   }
 
   private def noServerIsAvailable(config: EmbeddedKafkaConfig): Assertion = {
     expectedServerStatus(config.kafkaPort, NotAvailable)
     expectedServerStatus(config.schemaRegistryPort, NotAvailable)
-    expectedServerStatus(config.zooKeeperPort, NotAvailable)
+    expectedServerStatus(config.controllerPort, NotAvailable)
   }
 }

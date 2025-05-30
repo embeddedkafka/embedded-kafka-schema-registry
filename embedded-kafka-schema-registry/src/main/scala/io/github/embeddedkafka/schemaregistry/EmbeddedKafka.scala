@@ -7,12 +7,7 @@ import io.github.embeddedkafka.schemaregistry.ops.{
   RunningSchemaRegistryOps,
   SchemaRegistryOps
 }
-import io.github.embeddedkafka.{
-  EmbeddedKafkaSupport,
-  EmbeddedServer,
-  EmbeddedZ,
-  ServerOps
-}
+import io.github.embeddedkafka.{EmbeddedKafkaSupport, EmbeddedServer, ServerOps}
 
 trait EmbeddedKafka
     extends EmbeddedKafkaSupport[EmbeddedKafkaConfig]
@@ -30,26 +25,28 @@ trait EmbeddedKafka
 
   override private[embeddedkafka] def withRunningServers[T](
       config: EmbeddedKafkaConfig,
-      actualZkPort: Int,
       kafkaLogsDir: Path
   )(body: EmbeddedKafkaConfig => T): T = {
-    val broker =
+    val (broker, controller) =
       startKafka(
         config.kafkaPort,
-        actualZkPort,
+        config.controllerPort,
         config.customBrokerProperties,
         kafkaLogsDir
       )
-    val actualKafkaPort = EmbeddedKafka.kafkaPort(broker)
+
+    val actualBrokerPort     = EmbeddedKafka.kafkaPort(broker)
+    val actualControllerPort = EmbeddedKafka.controllerPort(controller)
+
     val restApp         = startSchemaRegistry(
       config.schemaRegistryPort,
-      actualKafkaPort,
+      actualBrokerPort,
       config.customSchemaRegistryProperties
     )
 
     val configWithUsedPorts = EmbeddedKafkaConfig(
-      actualKafkaPort,
-      actualZkPort,
+      actualBrokerPort,
+      actualControllerPort,
       EmbeddedKafka.schemaRegistryPort(restApp),
       config.customBrokerProperties,
       config.customProducerProperties,
@@ -61,8 +58,13 @@ trait EmbeddedKafka
       body(configWithUsedPorts)
     } finally {
       restApp.stop()
+      // In combined mode, we want to shut down the broker first, since the controller may be
+      // needed for controlled shutdown. Additionally, the controller shutdown process currently
+      // stops the raft client early on, which would disrupt broker shutdown.
       broker.shutdown()
+      controller.shutdown()
       broker.awaitShutdown()
+      controller.awaitShutdown()
     }
   }
 }
@@ -74,32 +76,29 @@ object EmbeddedKafka
   override def start()(
       implicit config: EmbeddedKafkaConfig
   ): EmbeddedKWithSR = {
-    val zkLogsDir    = Files.createTempDirectory("zookeeper-logs")
     val kafkaLogsDir = Files.createTempDirectory("kafka-logs")
 
-    val factory =
-      EmbeddedZ(startZooKeeper(config.zooKeeperPort, zkLogsDir), zkLogsDir)
-
-    val actualZookeeperPort = zookeeperPort(factory)
-    val kafkaBroker         = startKafka(
+    val (broker, controller) = startKafka(
       kafkaPort = config.kafkaPort,
-      zooKeeperPort = actualZookeeperPort,
+      controllerPort = config.controllerPort,
       customBrokerProperties = config.customBrokerProperties,
       kafkaLogDir = kafkaLogsDir
     )
 
-    val actualKafkaPort = EmbeddedKafka.kafkaPort(kafkaBroker)
+    val actualBrokerPort     = EmbeddedKafka.kafkaPort(broker)
+    val actualControllerPort = EmbeddedKafka.controllerPort(controller)
+
     val restApp         = EmbeddedSR(
       startSchemaRegistry(
         config.schemaRegistryPort,
-        actualKafkaPort,
+        actualBrokerPort,
         config.customSchemaRegistryProperties
       )
     )
 
     val configWithUsedPorts = EmbeddedKafkaConfigImpl(
-      kafkaPort = actualKafkaPort,
-      zooKeeperPort = actualZookeeperPort,
+      kafkaPort = actualBrokerPort,
+      controllerPort = actualControllerPort,
       schemaRegistryPort = EmbeddedKafka.schemaRegistryPort(restApp.app),
       customBrokerProperties = config.customBrokerProperties,
       customProducerProperties = config.customProducerProperties,
@@ -108,8 +107,8 @@ object EmbeddedKafka
     )
 
     val server = EmbeddedKWithSR(
-      factory = Option(factory),
-      broker = kafkaBroker,
+      broker = broker,
+      controller = controller,
       app = restApp,
       logsDirs = kafkaLogsDir,
       configWithUsedPorts

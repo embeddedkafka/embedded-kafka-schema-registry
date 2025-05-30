@@ -14,14 +14,14 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         val firstBroker = EmbeddedKafka.start()(
           EmbeddedKafkaConfig(
             kafkaPort = 7000,
-            zooKeeperPort = 7001,
+            controllerPort = 7001,
             schemaRegistryPort = 7002
           )
         )
         EmbeddedKafka.start()(
           EmbeddedKafkaConfig(
             kafkaPort = 8000,
-            zooKeeperPort = 8001,
+            controllerPort = 8001,
             schemaRegistryPort = 8002
           )
         )
@@ -47,11 +47,11 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         EmbeddedKafka.stop()
       }
 
-      "start and stop Kafka, Zookeeper, and Schema Registry on different specified ports using an implicit configuration" in {
+      "start and stop Kafka Broker, Kafka Controller, and Schema Registry on different specified ports using an implicit configuration" in {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig(
             kafkaPort = 12345,
-            zooKeeperPort = 54321,
+            controllerPort = 54321,
             schemaRegistryPort = 13542
           )
 
@@ -66,7 +66,7 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
     }
 
     "invoking the isRunning method" should {
-      "return true when Schema Registry, Kafka, and Zookeeper are all running" in {
+      "return true when Schema Registry, Kafka Broker, and Kafka Controller are all running" in {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
@@ -76,13 +76,10 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         EmbeddedKafka.isRunning shouldBe false
       }
 
-      "return true when Schema Registry, Kafka, and Zookeeper are all running, if started separately" in {
+      "return true when Schema Registry, Kafka Broker, and Kafka Controller are all running, if started separately" in {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
-        EmbeddedKafka.startZooKeeper(
-          Files.createTempDirectory("zookeeper-test-logs")
-        )
         EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
         EmbeddedKafka.startSchemaRegistry
 
@@ -91,13 +88,10 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         EmbeddedKafka.isRunning shouldBe false
       }
 
-      "return false when only Kafka and Zookeeper are running" in {
+      "return false when only Kafka Broker and Kafka Controller are running" in {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
-        EmbeddedKafka.startZooKeeper(
-          Files.createTempDirectory("zookeeper-test-logs")
-        )
         EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
         EmbeddedKafka.startSchemaRegistry
         EmbeddedKafka.stopSchemaRegistry()
