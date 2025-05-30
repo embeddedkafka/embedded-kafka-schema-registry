@@ -19,6 +19,7 @@ Versions match the version of Confluent Schema Registry they're built against.
 
 | embedded-kafka-schema-registry version | Confluent Schema Registry version | embedded-kafka & Kafka Kafka version | Scala versions  | Java version |
 |----------------------------------------|-----------------------------------|--------------------------------------|-----------------|--------------|
+| 8.0.0                                  | 8.0.0                             | 4.0.x                                | 2.13, 3.3       | 17+          |
 | 7.9.2                                  | 7.9.2                             | 3.9.x                                | 2,12, 2.13, 3.3 | 17+          |
 | 7.9.1                                  | 7.9.1                             | 3.9.x                                | 2,12, 2.13, 3.3 | 17+          |
 | 7.9.0                                  | 7.9.0                             | 3.9.x                                | 2,12, 2.13, 3.3 | 8+           |
@@ -69,7 +70,7 @@ class MySpec extends AnyWordSpecLike with Matchers with EmbeddedKafka {
 }
 ```
 
-* In-memory Zookeeper, Kafka, and Schema Registry will be instantiated respectively on port 6000, 6001, and 6002 and automatically shutdown at the end of the test.
+* Kafka Broker, Kafka Controller and Schema Registry will be instantiated respectively on port 6001, 6002, and 6003 and automatically shutdown at the end of the test.
 
 ## embedded-kafka-schema-registry-streams
 
