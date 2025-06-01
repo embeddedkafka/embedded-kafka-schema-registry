@@ -49,7 +49,7 @@ class ExampleKafkaStreamsSpec
 
   val (inTopic, outTopic) = ("in", "out")
 
-  val stringSerde: Serde[String] = Serdes.String
+  val stringSerde: Serde[String]              = Serdes.String
   val specificAvroSerde: Serde[TestAvroClass] = {
     val props = Map(
       AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> s"http://localhost:${config.schemaRegistryPort}",
@@ -67,7 +67,7 @@ class ExampleKafkaStreamsSpec
 
   "A Kafka streams test using Schema Registry" should {
     "support kafka streams and specific record" in {
-      val streamBuilder = new StreamsBuilder
+      val streamBuilder                          = new StreamsBuilder
       val stream: KStream[String, TestAvroClass] =
         streamBuilder.stream(
           inTopic,
@@ -115,7 +115,7 @@ class ExampleKafkaStreamsSpec
           .set("name", "yaz")
           .build()
 
-      val streamBuilder = new StreamsBuilder
+      val streamBuilder                          = new StreamsBuilder
       val stream: KStream[String, GenericRecord] =
         streamBuilder.stream(
           inTopic,
@@ -159,7 +159,7 @@ class ExampleKafkaStreamsSpec
       implicit val avroDeserializer: Deserializer[TestAvroClass] =
         specificAvroSerde.deserializer
 
-      val streamBuilder = new StreamsBuilder
+      val streamBuilder                          = new StreamsBuilder
       val stream: KStream[String, TestAvroClass] =
         streamBuilder.stream(
           inTopic,
