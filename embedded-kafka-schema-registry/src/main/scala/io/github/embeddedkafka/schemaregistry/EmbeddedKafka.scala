@@ -41,7 +41,7 @@ trait EmbeddedKafka
         kafkaLogsDir
       )
     val actualKafkaPort = EmbeddedKafka.kafkaPort(broker)
-    val restApp = startSchemaRegistry(
+    val restApp         = startSchemaRegistry(
       config.schemaRegistryPort,
       actualKafkaPort,
       config.customSchemaRegistryProperties
@@ -81,7 +81,7 @@ object EmbeddedKafka
       EmbeddedZ(startZooKeeper(config.zooKeeperPort, zkLogsDir), zkLogsDir)
 
     val actualZookeeperPort = zookeeperPort(factory)
-    val kafkaBroker = startKafka(
+    val kafkaBroker         = startKafka(
       kafkaPort = config.kafkaPort,
       zooKeeperPort = actualZookeeperPort,
       customBrokerProperties = config.customBrokerProperties,
@@ -89,7 +89,7 @@ object EmbeddedKafka
     )
 
     val actualKafkaPort = EmbeddedKafka.kafkaPort(kafkaBroker)
-    val restApp = EmbeddedSR(
+    val restApp         = EmbeddedSR(
       startSchemaRegistry(
         config.schemaRegistryPort,
         actualKafkaPort,
