@@ -1,14 +1,9 @@
 package io.github.embeddedkafka.schemaregistry
 
 import java.nio.file.Path
-
 import io.confluent.kafka.schemaregistry.rest.SchemaRegistryRestApplication
-import kafka.server.KafkaServer
-import io.github.embeddedkafka.{
-  EmbeddedServer,
-  EmbeddedServerWithKafka,
-  EmbeddedZ
-}
+import io.github.embeddedkafka.{EmbeddedServer, EmbeddedServerWithKafka}
+import kafka.server.{BrokerServer, ControllerServer}
 
 import scala.reflect.io.Directory
 
@@ -28,8 +23,8 @@ case class EmbeddedSR(app: SchemaRegistryRestApplication)
 }
 
 case class EmbeddedKWithSR(
-    factory: Option[EmbeddedZ],
-    broker: KafkaServer,
+    broker: BrokerServer,
+    controller: ControllerServer,
     app: EmbeddedSR,
     logsDirs: Path,
     config: EmbeddedKafkaConfig
@@ -37,10 +32,13 @@ case class EmbeddedKWithSR(
   override def stop(clearLogs: Boolean): Unit = {
     app.stop()
 
+    // In combined mode, we want to shut down the broker first, since the controller may be
+    // needed for controlled shutdown. Additionally, the controller shutdown process currently
+    // stops the raft client early on, which would disrupt broker shutdown.
     broker.shutdown()
+    controller.shutdown()
     broker.awaitShutdown()
-
-    factory.foreach(_.stop(clearLogs))
+    controller.awaitShutdown()
 
     if (clearLogs) {
       val _ = Directory(logsDirs.toFile).deleteRecursively()
