@@ -38,7 +38,7 @@ trait EmbeddedKafka
     val actualBrokerPort     = EmbeddedKafka.kafkaPort(broker)
     val actualControllerPort = EmbeddedKafka.controllerPort(controller)
 
-    val restApp         = startSchemaRegistry(
+    val restApp = startSchemaRegistry(
       config.schemaRegistryPort,
       actualBrokerPort,
       config.customSchemaRegistryProperties
@@ -88,7 +88,7 @@ object EmbeddedKafka
     val actualBrokerPort     = EmbeddedKafka.kafkaPort(broker)
     val actualControllerPort = EmbeddedKafka.controllerPort(controller)
 
-    val restApp         = EmbeddedSR(
+    val restApp = EmbeddedSR(
       startSchemaRegistry(
         config.schemaRegistryPort,
         actualBrokerPort,
