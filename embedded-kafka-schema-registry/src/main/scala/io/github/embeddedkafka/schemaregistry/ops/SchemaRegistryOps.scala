@@ -35,7 +35,7 @@ trait SchemaRegistryOps {
 
     val restAppProperties = Map(
       RestConfig.LISTENERS_CONFIG -> s"http://localhost:$actualSchemaRegistryPort",
-      SchemaRegistryConfig.KAFKASTORE_BOOTSTRAP_SERVERS_CONFIG -> s"BROKER://localhost:$kafkaPort"
+      SchemaRegistryConfig.KAFKASTORE_BOOTSTRAP_SERVERS_CONFIG -> s"PLAINTEXT://localhost:$kafkaPort"
     ) ++ customProperties
 
     val restApp = new SchemaRegistryRestApplication(
