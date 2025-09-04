@@ -4,10 +4,8 @@ object Dependencies {
 
   object CustomResolvers {
     lazy val Confluent = "confluent" at "https://packages.confluent.io/maven/"
-    // Since v5.5.0
-    lazy val Jitpack = "jitpack" at "https://jitpack.io"
 
-    lazy val resolvers: Seq[Resolver] = Seq(Confluent, Jitpack)
+    lazy val resolvers: Seq[Resolver] = Seq(Confluent)
   }
 
   object Versions {
