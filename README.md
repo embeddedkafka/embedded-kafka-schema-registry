@@ -44,8 +44,7 @@ Aliases to the old package name have been added, along with a one-time [Scalafix
 
 ```scala
 resolvers ++= Seq(
-  "confluent" at "https://packages.confluent.io/maven/",
-  "jitpack" at "https://jitpack.io"
+  "confluent" at "https://packages.confluent.io/maven/"
 )
 ```
 
