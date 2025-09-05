@@ -1,6 +1,6 @@
 # embedded-kafka-schema-registry
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.embeddedkafka/embedded-kafka-schema-registry_2.13)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.embeddedkafka/embedded-kafka-schema-registry_2.13)](https://central.sonatype.com/artifact/io.github.embeddedkafka/embedded-kafka-schema-registry_2.13)
 [![Test](https://github.com/embeddedkafka/embedded-kafka-schema-registry/actions/workflows/test.yml/badge.svg)](https://github.com/embeddedkafka/embedded-kafka-schema-registry/actions/workflows/test.yml)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ea9c18f6d1f547a599d76102cd0e709a)](https://www.codacy.com/gh/embeddedkafka/embedded-kafka-schema-registry)
 [![Codacy Coverage Badge](https://api.codacy.com/project/badge/Coverage/ea9c18f6d1f547a599d76102cd0e709a)](https://www.codacy.com/gh/embeddedkafka/embedded-kafka-schema-registry)
