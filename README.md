@@ -19,6 +19,7 @@ Versions match the version of Confluent Schema Registry they're built against.
 
 | embedded-kafka-schema-registry version | Confluent Schema Registry version | embedded-kafka & Kafka Kafka version | Scala versions  | Java version |
 |----------------------------------------|-----------------------------------|--------------------------------------|-----------------|--------------|
+| 8.1.0                                  | 8.1.0                             | 4.1.x                                | 2.13, 3.3       | 17+          |
 | 8.0.0                                  | 8.0.0                             | 4.0.x                                | 2.13, 3.3       | 17+          |
 | 7.9.2                                  | 7.9.2                             | 3.9.x                                | 2,12, 2.13, 3.3 | 17+          |
 | 7.9.1                                  | 7.9.1                             | 3.9.x                                | 2,12, 2.13, 3.3 | 17+          |
