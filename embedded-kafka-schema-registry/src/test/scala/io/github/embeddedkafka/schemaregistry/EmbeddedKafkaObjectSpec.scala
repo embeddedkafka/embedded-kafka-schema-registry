@@ -18,7 +18,7 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
             schemaRegistryPort = 7002
           )
         )
-        EmbeddedKafka.start()(
+        val _ = EmbeddedKafka.start()(
           EmbeddedKafkaConfig(
             kafkaPort = 8000,
             controllerPort = 8001,
@@ -55,7 +55,7 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
             schemaRegistryPort = 13542
           )
 
-        EmbeddedKafka.start()
+        val _ = EmbeddedKafka.start()
 
         expectedServerStatus(13542, Available)
         expectedServerStatus(12345, Available)
@@ -70,8 +70,8 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
-        EmbeddedKafka.start()
-        EmbeddedKafka.isRunning shouldBe true
+        val _ = EmbeddedKafka.start()
+        val _ = EmbeddedKafka.isRunning shouldBe true
         EmbeddedKafka.stop()
         EmbeddedKafka.isRunning shouldBe false
       }
@@ -80,10 +80,11 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
-        EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
-        EmbeddedKafka.startSchemaRegistry
+        val _ =
+          EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
+        val _ = EmbeddedKafka.startSchemaRegistry
 
-        EmbeddedKafka.isRunning shouldBe true
+        val _ = EmbeddedKafka.isRunning shouldBe true
         EmbeddedKafka.stop()
         EmbeddedKafka.isRunning shouldBe false
       }
@@ -92,10 +93,11 @@ class EmbeddedKafkaObjectSpec extends EmbeddedKafkaSpecSupport {
         implicit val config: EmbeddedKafkaConfig =
           EmbeddedKafkaConfig()
 
-        EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
-        EmbeddedKafka.startSchemaRegistry
+        val _ =
+          EmbeddedKafka.startKafka(Files.createTempDirectory("kafka-test-logs"))
+        val _ = EmbeddedKafka.startSchemaRegistry
         EmbeddedKafka.stopSchemaRegistry()
-        EmbeddedKafka.isRunning shouldBe false
+        val _ = EmbeddedKafka.isRunning shouldBe false
         EmbeddedKafka.stop()
         EmbeddedKafka.isRunning shouldBe false
       }
