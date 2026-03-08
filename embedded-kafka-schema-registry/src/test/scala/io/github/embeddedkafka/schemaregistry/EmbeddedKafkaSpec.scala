@@ -93,7 +93,7 @@ class EmbeddedKafkaSpec
       val _ = records.size shouldBe 2
 
       val (record1Key, record1Value) :: (record2Key, record2Value) :: Nil =
-        records
+        records: @unchecked
 
       val _ = record1Key shouldBe key1
       val _ = record1Value shouldBe message1
