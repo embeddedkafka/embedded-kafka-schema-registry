@@ -72,7 +72,7 @@ class EmbeddedKafkaSpec
       val (recordKey, recordValue) =
         consumeFirstKeyedMessageFrom[String, TestAvroClass](topic)
 
-      recordKey shouldBe key
+      val _ = recordKey shouldBe key
       recordValue shouldBe message
     }
 
@@ -90,15 +90,15 @@ class EmbeddedKafkaSpec
       val records =
         consumeNumberKeyedMessagesFrom[String, TestAvroClass](topic, number = 2)
 
-      records.size shouldBe 2
+      val _ = records.size shouldBe 2
 
       val (record1Key, record1Value) :: (record2Key, record2Value) :: Nil =
-        records
+        records: @unchecked
 
-      record1Key shouldBe key1
-      record1Value shouldBe message1
+      val _ = record1Key shouldBe key1
+      val _ = record1Value shouldBe message1
 
-      record2Key shouldBe key2
+      val _ = record2Key shouldBe key2
       record2Value shouldBe message2
     }
   }
@@ -125,7 +125,7 @@ class EmbeddedKafkaSpec
       publishToKafka(topic, key, message)
 
       val (k, m) = consumeFirstKeyedMessageFrom[String, TestAvroClass](topic)
-      k shouldBe key
+      val _      = k shouldBe key
       m shouldBe message
     }
   }
