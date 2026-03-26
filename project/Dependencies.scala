@@ -14,7 +14,7 @@ object Dependencies {
     val EmbeddedKafka     = "4.2.0"
     val ConfluentPlatform = "8.2.0"
     val Slf4j             = "2.0.17"
-    val ScalaTest         = "3.2.19"
+    val ScalaTest         = "3.2.20"
   }
 
   object Common {
