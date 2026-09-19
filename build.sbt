@@ -4,12 +4,14 @@ ThisBuild / parallelExecution := false
 ThisBuild / versionScheme     := Some("semver-spec")
 
 lazy val compileSettings = Seq(
-  Compile / compile := (Compile / compile)
-    .dependsOn(
-      Compile / scalafmtSbt,
-      Compile / scalafmtAll
-    )
-    .value,
+  Compile / compile := Def.uncached {
+    (Compile / compile)
+      .dependsOn(
+        Compile / scalafmtSbt,
+        Compile / scalafmtAll
+      )
+      .value
+  },
   libraryDependencies ++= Common.confluentDeps ++ Common.testDeps,
   resolvers ++= CustomResolvers.resolvers,
   javaOptions ++= Seq("-Xms512m", "-Xmx2048m"),
