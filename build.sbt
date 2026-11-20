@@ -1,11 +1,8 @@
 import Dependencies._
 
 ThisBuild / parallelExecution := false
+Global / workerMaxInstances := 1 // Necessary since sbt 2.1.0 (https://github.com/sbt/sbt/issues/10078)
 ThisBuild / versionScheme     := Some("semver-spec")
-
-// Since SBT 2.1.0, test tasks of different modules may run concurrently despite
-// `parallelExecution := false`; they share fixed ports, so limit to one at a time.
-Global / concurrentRestrictions += Tags.limit(Tags.Test, 1)
 
 lazy val compileSettings = Seq(
   Compile / compile := Def.uncached {
